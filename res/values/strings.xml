@@ -3,6 +3,7 @@
 
     <string name="app_name">CornellOutdoors</string>
     <string name="hello_world">Hello world!</string>
+    <string name="button">Button</string>
     <string name="action_settings">Settings</string>
 
 </resources>

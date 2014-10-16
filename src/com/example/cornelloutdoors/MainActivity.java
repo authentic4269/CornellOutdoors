@@ -1,5 +1,7 @@
 package com.example.cornelloutdoors;
 
+import java.io.FileNotFoundException;
+
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
@@ -16,8 +18,14 @@ public class MainActivity extends ActionBarActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		try {
+			openFileInput("cornelloutdoorsconfig");
+		} catch (FileNotFoundException e)
+		{
+			
+		}
 		setContentView(R.layout.activity_main);
-
+		
 		if (savedInstanceState == null) {
 			getSupportFragmentManager().beginTransaction()
 					.add(R.id.container, new PlaceholderFragment()).commit();
@@ -29,6 +37,8 @@ public class MainActivity extends ActionBarActivity {
 
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.main, menu);
+		menu.add("Settings");
+		menu.add("History");
 		return true;
 	}
 

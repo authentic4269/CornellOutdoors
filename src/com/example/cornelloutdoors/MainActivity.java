@@ -1,10 +1,12 @@
 package com.example.cornelloutdoors;
 
 import java.io.BufferedReader;
+import android.widget.AdapterView.OnItemClickListener;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 import android.support.v7.app.ActionBarActivity;
@@ -16,14 +18,24 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.ImageButton;
+import android.widget.ListView;
+import android.widget.TextView;
 import android.os.Build;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Polyline;
@@ -38,6 +50,12 @@ public class MainActivity extends ActionBarActivity {
 	private LocationManager locationManager;
 	private GoogleMap mMap;
 	public LinkedList<String> userActivities;
+	private ArrayList<Setting> data;
+	private SettingArrayAdapter adapter;
+	public String[] activityTypes = new String[] {"Rock Climbing", "Hiking", "Paddling", "Swimming", "Skiing", 
+			"Running", "Weightlifting", "Sailing", "Golfing", "Basketball", "Football", "Ping Pong", "Table Tennis"
+	};
+	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -52,9 +70,50 @@ public class MainActivity extends ActionBarActivity {
 				userActivities.add(line);
 			}
 			setContentView(R.layout.activity_main);
-		} catch (FileNotFoundException e)
+		} 
+		
+		
+		catch (FileNotFoundException e)
 		{
+			// have the user set up their initial settings
 			setContentView(R.layout.activity_settings);
+			final ListView settingsListView = (ListView) findViewById(R.id.list);
+			final ArrayList<Setting> settings = new ArrayList<Setting>();
+			for (int i = 0; i < activityTypes.length; i++)
+			{
+				settings.add(new Setting(activityTypes[i]));
+			}
+			final SettingArrayAdapter adapter = new SettingArrayAdapter(this, 
+					settings);
+			settingsListView.setAdapter(adapter);
+			settingsListView.setOnItemClickListener(new OnItemClickListener() {
+
+				@Override
+				public void onItemClick(AdapterView<?> parent, View arg1,
+						int position, long id) {
+					// TODO Auto-generated method stub
+					
+				}
+				
+			});
+			final Button nextButton = (Button) findViewById(R.id.continuebutton);
+			
+			nextButton.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View arg0) {
+					userActivities = new LinkedList<String>();
+					for (int i = 0; i < adapter.getCount(); i++)
+					{
+						if (adapter.getItem(i).checked)
+						{
+							userActivities.add(adapter.getItem(i).name);
+						}
+					}
+				}
+				
+			});
+			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -126,5 +185,18 @@ public class MainActivity extends ActionBarActivity {
 			return rootView;
 		}
 	}
+	
+	public class Setting {
+		public String name;
+		public boolean checked;
+		
+		public Setting(String n)
+		{
+			name = n;
+			checked = false;
+		}
+		
+	}
+	 
 
 }

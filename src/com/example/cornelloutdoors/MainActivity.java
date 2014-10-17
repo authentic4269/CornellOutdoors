@@ -2,17 +2,29 @@ package com.example.cornelloutdoors;
 
 import java.io.BufferedReader;
 import android.widget.AdapterView.OnItemClickListener;
+
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -39,9 +51,11 @@ import android.location.LocationManager;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -51,8 +65,9 @@ public class MainActivity extends ActionBarActivity {
 	private LocationManager locationManager;
 	private GoogleMap mMap;
 	public LinkedList<String> userActivities;
-	private ArrayList<Setting> data;
-	private SettingArrayAdapter adapter;
+	public HashMap<String, JSONObject> markers;
+	JSONArray locationsArray;
+	private String serverString = "http://sleepy-wave-3087.herokuapp.com/";
 	private String configfile = "cornelloutdoorsconfig";
 	public String[] activityTypes = new String[] {"Rock Climbing", "Hiking", "Paddling", "Swimming", "Skiing", 
 			"Running", "Weightlifting", "Sailing", "Golfing", "Basketball", "Football", "Ping Pong", "Table Tennis"
@@ -119,7 +134,6 @@ public class MainActivity extends ActionBarActivity {
 					}
 
 					setContentView(R.layout.activity_main);
-					
 					if (savedInstanceState == null) {
 						getSupportFragmentManager().beginTransaction()
 								.add(R.id.container, new PlaceholderFragment()).commit();
@@ -135,6 +149,78 @@ public class MainActivity extends ActionBarActivity {
 
 	}
 	
+	private void initializeActivityList() {
+		ActivityLoader loader = new ActivityLoader();
+		loader.execute();
+		
+	}
+	
+	public class ActivityLoader extends AsyncTask<String, String, String> {
+
+		@Override
+		protected String doInBackground(String... arg0) {
+			String response = "";
+			try {
+				String queryString = serverString + '?';
+				String line;
+				Iterator<String> iter = userActivities.iterator();
+				while (iter.hasNext())
+				{
+					queryString = queryString + iter.next() + '&';
+				}
+				URL url = new URL(queryString);
+				URLConnection connection = url.openConnection();
+				connection.connect();
+				DataInputStream input = new DataInputStream(connection.getInputStream());
+				while (null != ((line = input.readLine())))
+				{
+					response = response + line; 
+				}
+			} catch (Exception e) 
+			{
+				e.printStackTrace();
+			}
+			return response;
+		}
+		
+		protected void onPostExecute(String obj) {
+			try {
+				locationsArray = new JSONArray(obj);
+				JSONObject m;
+				markers = new HashMap<String, JSONObject>();
+				for (int i = 0; i < locationsArray.length(); i++)
+				{
+					m = locationsArray.getJSONObject(i);
+					LatLng loc = new LatLng(Double.parseDouble(m.getString("latitude")), 
+							Double.parseDouble(m.getString("longitude")));
+					Marker newmarker = mMap.addMarker(new MarkerOptions()
+							.position(loc)
+							.snippet(m.getString("description").substring(0, 30))
+							.title(m.getString("name")));
+					markers.put(m.getString("name"), m);
+					
+				}
+				mMap.setOnMarkerClickListener(new OnMarkerClickListener() {
+
+					@Override
+					public boolean onMarkerClick(Marker marker) {
+						JSONObject markerData = markers.get(marker.getTitle());
+						//TODO: this should go to a new activity
+						return true;
+					}
+					
+				});
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+		
+
+	}
+
+
 	public void findCurrentLocation(View view)
 	{
 		locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
@@ -144,8 +230,7 @@ public class MainActivity extends ActionBarActivity {
         Location loc = locationManager.getLastKnownLocation(locationManager.NETWORK_PROVIDER);
 
         LatLng curr = new LatLng(loc.getLatitude(),loc.getLongitude());
-        mMap.addMarker(new MarkerOptions().position(curr));
-
+        initializeActivityList();
         //Zoom In On Marker
         resetCamera(curr,.002);
 	}

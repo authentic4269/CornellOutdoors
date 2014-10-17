@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import android.widget.AdapterView.OnItemClickListener;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -52,16 +53,17 @@ public class MainActivity extends ActionBarActivity {
 	public LinkedList<String> userActivities;
 	private ArrayList<Setting> data;
 	private SettingArrayAdapter adapter;
+	private String configfile = "cornelloutdoorsconfig";
 	public String[] activityTypes = new String[] {"Rock Climbing", "Hiking", "Paddling", "Swimming", "Skiing", 
 			"Running", "Weightlifting", "Sailing", "Golfing", "Basketball", "Football", "Ping Pong", "Table Tennis"
 	};
 	
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		try {
-			BufferedReader settingsInput = new BufferedReader(new InputStreamReader(openFileInput("cornelloutdoorsconfig"), "UTF-8"));
+			BufferedReader settingsInput = new BufferedReader(new InputStreamReader(openFileInput(configfile), "UTF-8"));
 			String line;
 			
 			userActivities = new LinkedList<String>();
@@ -70,6 +72,10 @@ public class MainActivity extends ActionBarActivity {
 				userActivities.add(line);
 			}
 			setContentView(R.layout.activity_main);
+			if (savedInstanceState == null) {
+				getSupportFragmentManager().beginTransaction()
+						.add(R.id.container, new PlaceholderFragment()).commit();
+			}
 		} 
 		
 		
@@ -86,16 +92,6 @@ public class MainActivity extends ActionBarActivity {
 			final SettingArrayAdapter adapter = new SettingArrayAdapter(this, 
 					settings);
 			settingsListView.setAdapter(adapter);
-			settingsListView.setOnItemClickListener(new OnItemClickListener() {
-
-				@Override
-				public void onItemClick(AdapterView<?> parent, View arg1,
-						int position, long id) {
-					// TODO Auto-generated method stub
-					
-				}
-				
-			});
 			final Button nextButton = (Button) findViewById(R.id.continuebutton);
 			
 			nextButton.setOnClickListener(new OnClickListener() {
@@ -110,6 +106,24 @@ public class MainActivity extends ActionBarActivity {
 							userActivities.add(adapter.getItem(i).name);
 						}
 					}
+					try {
+						FileOutputStream fos = openFileOutput(configfile, Context.MODE_PRIVATE);
+						for (int i = 0; i < userActivities.size(); i++)
+						{
+							fos.write((userActivities.get(i) + '\n').getBytes());
+						}
+						fos.close();
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+
+					setContentView(R.layout.activity_main);
+					
+					if (savedInstanceState == null) {
+						getSupportFragmentManager().beginTransaction()
+								.add(R.id.container, new PlaceholderFragment()).commit();
+					}
 				}
 				
 			});
@@ -118,10 +132,7 @@ public class MainActivity extends ActionBarActivity {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		if (savedInstanceState == null) {
-			getSupportFragmentManager().beginTransaction()
-					.add(R.id.container, new PlaceholderFragment()).commit();
-		}
+
 	}
 	
 	public void findCurrentLocation(View view)

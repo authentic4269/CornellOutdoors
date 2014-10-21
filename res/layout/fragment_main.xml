@@ -8,16 +8,10 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.cornelloutdoors.MainActivity$PlaceholderFragment" >
 
-    <TextView
-        android:id="@+id/hello"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/hello_world" />
     <Button
         android:id="@+id/button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/hello"
         android:text="@string/button"
         android:onClick="findCurrentLocation" />
     

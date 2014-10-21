@@ -1,15 +1,9 @@
 package com.example.cornelloutdoors;
 
 import java.io.BufferedReader;
-import android.widget.AdapterView.OnItemClickListener;
-
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -22,7 +16,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -32,30 +25,19 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.os.Build;
-
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.Polyline;
-import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
+import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -76,6 +58,11 @@ public class MainActivity extends ActionBarActivity {
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
+		boolean deleted = deleteFile( configfile );
+		if( deleted )
+		{
+			System.out.println( "deleted \n");
+		}
 		super.onCreate(savedInstanceState);
 		try {
 			BufferedReader settingsInput = new BufferedReader(new InputStreamReader(openFileInput(configfile), "UTF-8"));
@@ -161,6 +148,7 @@ public class MainActivity extends ActionBarActivity {
 		protected String doInBackground(String... arg0) {
 			String response = "";
 			try {
+				System.out.println( "Attempting to run background task \n");
 				String queryString = serverString + '?';
 				String line;
 				Iterator<String> iter = userActivities.iterator();
@@ -169,22 +157,27 @@ public class MainActivity extends ActionBarActivity {
 					queryString = queryString + iter.next() + '&';
 				}
 				URL url = new URL(queryString);
+				System.out.println( "URL: " + queryString);
 				URLConnection connection = url.openConnection();
-				connection.connect();
-				DataInputStream input = new DataInputStream(connection.getInputStream());
+				
+				BufferedReader input = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+				System.out.println("Getting Input");
 				while (null != ((line = input.readLine())))
 				{
 					response = response + line; 
 				}
 			} catch (Exception e) 
 			{
+				System.out.println( "Error with background task \n");
 				e.printStackTrace();
 			}
 			return response;
 		}
 		
+		@Override
 		protected void onPostExecute(String obj) {
 			try {
+				mMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
 				locationsArray = new JSONArray(obj);
 				JSONObject m;
 				markers = new HashMap<String, JSONObject>();
@@ -195,18 +188,22 @@ public class MainActivity extends ActionBarActivity {
 							Double.parseDouble(m.getString("longitude")));
 					Marker newmarker = mMap.addMarker(new MarkerOptions()
 							.position(loc)
-							.snippet(m.getString("description").substring(0, 30))
 							.title(m.getString("name")));
+
 					markers.put(m.getString("name"), m);
 					
 				}
-				mMap.setOnMarkerClickListener(new OnMarkerClickListener() {
+				mMap.setOnInfoWindowClickListener(new OnInfoWindowClickListener() {
 
 					@Override
-					public boolean onMarkerClick(Marker marker) {
+					public void onInfoWindowClick(Marker marker) {
 						JSONObject markerData = markers.get(marker.getTitle());
-						//TODO: this should go to a new activity
-						return true;
+						System.out.println(markerData);
+						Intent informationScreen = new Intent(MainActivity.this, MarkerInformation.class);
+						
+						informationScreen.putExtra("info", markerData.toString());
+						startActivity( informationScreen );
+						return;
 					}
 					
 				});
@@ -227,7 +224,7 @@ public class MainActivity extends ActionBarActivity {
 		mMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
 		
 		//Grab Location and Add Marker
-        Location loc = locationManager.getLastKnownLocation(locationManager.NETWORK_PROVIDER);
+        Location loc = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 
         LatLng curr = new LatLng(loc.getLatitude(),loc.getLongitude());
         initializeActivityList();

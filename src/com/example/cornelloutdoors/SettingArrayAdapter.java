@@ -9,8 +9,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.TextView;
-
 import com.example.cornelloutdoors.MainActivity.Setting;
 
 public class SettingArrayAdapter extends ArrayAdapter<Setting> {
@@ -28,7 +26,8 @@ public class SettingArrayAdapter extends ArrayAdapter<Setting> {
 		   protected CheckBox checkbox;
 	   }
 	   
-	   public View getView(int position, View convertView, ViewGroup parent) {
+	   @Override
+	public View getView(int position, View convertView, ViewGroup parent) {
 		    View view = null;
 		    if (convertView == null) {
 		      LayoutInflater inflator = context.getLayoutInflater();

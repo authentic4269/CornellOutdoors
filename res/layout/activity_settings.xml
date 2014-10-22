@@ -11,7 +11,7 @@
         android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Which of these activities are you interested in?"
+        android:text="@string/initial_question"
         android:textAppearance="?android:attr/textAppearanceMedium" />
     
     <ListView
@@ -26,6 +26,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="Finish" />
+        android:text="@string/finish" />
 
 </LinearLayout>

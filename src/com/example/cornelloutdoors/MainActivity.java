@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,6 +30,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Pair;
 
 import android.location.Location;
 import android.location.LocationManager;
@@ -38,6 +40,7 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
+import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -48,6 +51,8 @@ public class MainActivity extends ActionBarActivity {
 	private GoogleMap mMap;
 	public LinkedList<String> userActivities;
 	public HashMap<String, JSONObject> markers;
+	public List<Marker> latLongs = new ArrayList<Marker>();
+	public int cycleIndex;
 	JSONArray locationsArray;
 	private String serverString = "http://sleepy-wave-3087.herokuapp.com/";
 	private String configfile = "cornelloutdoorsconfig";
@@ -133,7 +138,6 @@ public class MainActivity extends ActionBarActivity {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
 	}
 	
 	private void initializeActivityList() {
@@ -181,14 +185,19 @@ public class MainActivity extends ActionBarActivity {
 				locationsArray = new JSONArray(obj);
 				JSONObject m;
 				markers = new HashMap<String, JSONObject>();
+				System.out.println("Placing Markers\n");
 				for (int i = 0; i < locationsArray.length(); i++)
 				{
 					m = locationsArray.getJSONObject(i);
-					LatLng loc = new LatLng(Double.parseDouble(m.getString("latitude")), 
-							Double.parseDouble(m.getString("longitude")));
+					Double lat = Double.parseDouble(m.getString("latitude"));
+					Double lon = Double.parseDouble(m.getString("longitude"));
+					LatLng loc = new LatLng(lat, lon);
+					
 					Marker newmarker = mMap.addMarker(new MarkerOptions()
 							.position(loc)
 							.title(m.getString("name")));
+					
+					latLongs.add( newmarker );
 
 					markers.put(m.getString("name"), m);
 					
@@ -207,6 +216,19 @@ public class MainActivity extends ActionBarActivity {
 					}
 					
 				});
+				
+				mMap.setOnMapLongClickListener(new OnMapLongClickListener() {
+					@Override
+					public void onMapLongClick(LatLng point){
+						Intent suggestActivity = new Intent(MainActivity.this, SuggestActivity.class);
+						
+						suggestActivity.putExtra("lat", point.latitude);
+						suggestActivity.putExtra("lon", point.longitude);
+						suggestActivity.putExtra("activities", userActivities);
+						startActivity( suggestActivity );
+						return;
+					}
+				});
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -218,16 +240,33 @@ public class MainActivity extends ActionBarActivity {
 	}
 
 
-	public void findCurrentLocation(View view)
+	public void cycleLocations(View view)
 	{
-		locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 		mMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
+		LatLng curr;
 		
-		//Grab Location and Add Marker
-        Location loc = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+		//Haven't initialized anything yet
+		if ( latLongs.size() == 0 )
+		{
+			initializeActivityList();
+			locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+			Location loc = locationManager.getLastKnownLocation(locationManager.NETWORK_PROVIDER);
 
-        LatLng curr = new LatLng(loc.getLatitude(),loc.getLongitude());
-        initializeActivityList();
+	        curr = new LatLng(loc.getLatitude(),loc.getLongitude());
+			
+		}
+		else
+		{
+	        //Grab Location and Add Marker
+	        Marker marker = latLongs.get( cycleIndex );
+	      	curr = marker.getPosition();
+	      	
+	      	cycleIndex += 1;
+	      	if(cycleIndex >= latLongs.size())
+	      	{
+	      		cycleIndex = 0;
+	      	}
+		}
         //Zoom In On Marker
         resetCamera(curr,.002);
 	}

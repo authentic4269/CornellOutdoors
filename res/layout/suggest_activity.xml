@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.example.cornelloutdoors.SuggestActivity" >
+    
+    <TextView
+        android:id="@+id/sa_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/suggest"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+    
+    <EditText
+	    android:id="@+id/sa_location"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:hint="@string/location" />
+    
+    <Spinner 
+        android:id="@+id/sa_activity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    
+    <EditText
+	    android:id="@+id/sa_opentime"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:hint="@string/opentime" />
+    
+    <EditText
+	    android:id="@+id/sa_description"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_below="@id/sa_opentime"
+	    android:hint="@string/description" />
+    
+    <Button
+        android:id="@+id/sa_enter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/sa_description"
+        android:text="@string/suggestenter"
+        android:onClick="entered"/>
+        
+    
+</LinearLayout>

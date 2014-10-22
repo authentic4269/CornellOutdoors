@@ -9,18 +9,19 @@
     tools:context="com.example.cornelloutdoors.MainActivity$PlaceholderFragment" >
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/next"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/button"
-        android:onClick="findCurrentLocation" />
+        android:onClick="cycleLocations" />
+    
     
     <fragment
         class="com.google.android.gms.maps.MapFragment"
         android:id="@+id/map"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/button"
+        android:layout_below="@id/next"
         android:name="com.google.android.gms.maps.MapFragment"/>
 
 </RelativeLayout>

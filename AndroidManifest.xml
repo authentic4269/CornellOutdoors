@@ -33,6 +33,7 @@
             </intent-filter>
         </activity>
         <activity android:name="com.example.cornelloutdoors.MarkerInformation" />
+        <activity android:name="com.example.cornelloutdoors.SuggestActivity"   />
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />

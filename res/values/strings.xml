@@ -2,7 +2,14 @@
 <resources>
 
     <string name="app_name">CornellOutdoors</string>
-    <string name="button">Refresh</string>
+    <string name="initial_question">Which of these activities are you interested in?</string>
+    <string name="finish">Finish</string>
+    <string name="button">Next Location</string>
     <string name="action_settings">Settings</string>
+    <string name="suggest">Suggest Activity</string>
+    <string name="location">Activity Location</string>
+    <string name="opentime">Times Open</string>
+    <string name="description">Description of Activity</string>
+    <string name="suggestenter">Enter</string>
 
 </resources>

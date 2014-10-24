@@ -63,7 +63,7 @@ public class MainActivity extends ActionBarActivity {
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
-		boolean deleted = deleteFile( configfile );
+		boolean deleted = false;//deleteFile( configfile );
 		if( deleted )
 		{
 			System.out.println( "deleted \n");
@@ -134,10 +134,23 @@ public class MainActivity extends ActionBarActivity {
 				
 			});
 			
+			final Button historyButton = (Button) findViewById(R.id.history);
+			final Intent historyIntent = new Intent(this, HistoryActivity.class);
+			historyButton.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View arg0) {
+					startActivity(historyIntent);
+				}
+				
+			});
+			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		Intent intent = new Intent(this, TrackingService.class);
+		startService(intent);
 	}
 	
 	private void initializeActivityList() {

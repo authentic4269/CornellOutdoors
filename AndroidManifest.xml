@@ -34,6 +34,7 @@
         </activity>
         <activity android:name="com.example.cornelloutdoors.MarkerInformation" />
         <activity android:name="com.example.cornelloutdoors.SuggestActivity"   />
+        <service android:name="com.example.cornelloutdoors.TrackingService" />
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />

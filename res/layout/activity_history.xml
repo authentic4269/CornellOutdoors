@@ -1,0 +1,29 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Estimated Steps Per Day (Graph w/daily counts)"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+    
+     <com.androidplot.xy.XYPlot
+         android:id="@+id/stepsPlot"
+         android:layout_width="match_parent"
+         android:layout_height="152dp"
+         android:layout_marginLeft="10dp"
+         android:layout_marginRight="10dp"
+         android:layout_marginTop="10dp"
+         title="Steps" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Places You've Been"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+</LinearLayout>

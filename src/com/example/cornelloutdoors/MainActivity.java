@@ -30,39 +30,26 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Pair;
 
-import android.location.Location;
-import android.location.LocationManager;
-
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
-import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
-import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.CameraUpdateFactory;
 
 public class MainActivity extends ActionBarActivity {
-	
-	private LocationManager locationManager;
-	private GoogleMap mMap;
 	public LinkedList<String> userActivities;
 	public HashMap<String, JSONObject> markers;
-	public List<Marker> latLongs = new ArrayList<Marker>();
-	public int cycleIndex;
+	//public List<Marker> latLongs = new ArrayList<Marker>();
+	
 	JSONArray locationsArray;
-	private String serverString = "http://sleepy-wave-3087.herokuapp.com/";
+	public String serverString = "http://sleepy-wave-3087.herokuapp.com/";
 	private String configfile = "cornelloutdoorsconfig";
 	public String[] activityTypes = new String[] {"Rock Climbing", "Hiking", "Paddling", "Swimming", "Skiing", 
 			"Running", "Weightlifting", "Sailing", "Golfing", "Basketball", "Football", "Ping Pong", "Table Tennis"
 	};
 	
+	GlobalState gs;
+	
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
+		gs = (GlobalState) getApplication();
 		boolean deleted = false;//deleteFile( configfile );
 		if( deleted )
 		{
@@ -78,6 +65,7 @@ public class MainActivity extends ActionBarActivity {
 			{
 				userActivities.add(line);
 			}
+			
 			setContentView(R.layout.activity_main);
 			if (savedInstanceState == null) {
 				getSupportFragmentManager().beginTransaction()
@@ -124,7 +112,6 @@ public class MainActivity extends ActionBarActivity {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-
 					setContentView(R.layout.activity_main);
 					if (savedInstanceState == null) {
 						getSupportFragmentManager().beginTransaction()
@@ -134,7 +121,7 @@ public class MainActivity extends ActionBarActivity {
 				
 			});
 			
-			final Button historyButton = (Button) findViewById(R.id.history);
+			/*final Button historyButton = (Button) findViewById(R.id.history);
 			final Intent historyIntent = new Intent(this, HistoryActivity.class);
 			historyButton.setOnClickListener(new OnClickListener() {
 
@@ -143,153 +130,26 @@ public class MainActivity extends ActionBarActivity {
 					startActivity(historyIntent);
 				}
 				
-			});
+			});*/
 			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		gs.setUserActivities(userActivities);
 		Intent intent = new Intent(this, TrackingService.class);
 		startService(intent);
 	}
 	
-	private void initializeActivityList() {
-		ActivityLoader loader = new ActivityLoader();
-		loader.execute();
-		
-	}
-	
-	public class ActivityLoader extends AsyncTask<String, String, String> {
-
-		@Override
-		protected String doInBackground(String... arg0) {
-			String response = "";
-			try {
-				System.out.println( "Attempting to run background task \n");
-				String queryString = serverString + '?';
-				String line;
-				Iterator<String> iter = userActivities.iterator();
-				while (iter.hasNext())
-				{
-					queryString = queryString + iter.next() + '&';
-				}
-				URL url = new URL(queryString);
-				System.out.println( "URL: " + queryString);
-				URLConnection connection = url.openConnection();
-				
-				BufferedReader input = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-				System.out.println("Getting Input");
-				while (null != ((line = input.readLine())))
-				{
-					response = response + line; 
-				}
-			} catch (Exception e) 
-			{
-				System.out.println( "Error with background task \n");
-				e.printStackTrace();
-			}
-			return response;
-		}
-		
-		@Override
-		protected void onPostExecute(String obj) {
-			try {
-				mMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
-				locationsArray = new JSONArray(obj);
-				JSONObject m;
-				markers = new HashMap<String, JSONObject>();
-				System.out.println("Placing Markers\n");
-				for (int i = 0; i < locationsArray.length(); i++)
-				{
-					m = locationsArray.getJSONObject(i);
-					Double lat = Double.parseDouble(m.getString("latitude"));
-					Double lon = Double.parseDouble(m.getString("longitude"));
-					LatLng loc = new LatLng(lat, lon);
-					
-					Marker newmarker = mMap.addMarker(new MarkerOptions()
-							.position(loc)
-							.title(m.getString("name")));
-					
-					latLongs.add( newmarker );
-
-					markers.put(m.getString("name"), m);
-					
-				}
-				mMap.setOnInfoWindowClickListener(new OnInfoWindowClickListener() {
-
-					@Override
-					public void onInfoWindowClick(Marker marker) {
-						JSONObject markerData = markers.get(marker.getTitle());
-						System.out.println(markerData);
-						Intent informationScreen = new Intent(MainActivity.this, MarkerInformation.class);
-						
-						informationScreen.putExtra("info", markerData.toString());
-						startActivity( informationScreen );
-						return;
-					}
-					
-				});
-				
-				mMap.setOnMapLongClickListener(new OnMapLongClickListener() {
-					@Override
-					public void onMapLongClick(LatLng point){
-						Intent suggestActivity = new Intent(MainActivity.this, SuggestActivity.class);
-						
-						suggestActivity.putExtra("lat", point.latitude);
-						suggestActivity.putExtra("lon", point.longitude);
-						suggestActivity.putExtra("activities", userActivities);
-						startActivity( suggestActivity );
-						return;
-					}
-				});
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-		}
-		
-
-	}
-
-
-	public void cycleLocations(View view)
+	public void showMap( View view )
 	{
-		mMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
-		LatLng curr;
-		
-		//Haven't initialized anything yet
-		if ( latLongs.size() == 0 )
-		{
-			initializeActivityList();
-			locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-			Location loc = locationManager.getLastKnownLocation(locationManager.NETWORK_PROVIDER);
-
-	        curr = new LatLng(loc.getLatitude(),loc.getLongitude());
-			
-		}
-		else
-		{
-	        //Grab Location and Add Marker
-	        Marker marker = latLongs.get( cycleIndex );
-	      	curr = marker.getPosition();
-	      	
-	      	cycleIndex += 1;
-	      	if(cycleIndex >= latLongs.size())
-	      	{
-	      		cycleIndex = 0;
-	      	}
-		}
-        //Zoom In On Marker
-        resetCamera(curr,.002);
-	}
-	
-	 public void resetCamera(LatLng curr, double offset)
-	 {
-	        LatLng lowerBound = new LatLng(curr.latitude-offset, curr.longitude-offset);
-	        LatLng upperBound = new LatLng(curr.latitude+offset, curr.longitude+offset);
-	        LatLngBounds currBounds = new LatLngBounds(lowerBound, upperBound);
-	        mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(currBounds, 0));
+		//System.out.println("Enters Click");
+		//final Button nextButton = (Button) findViewById(R.id.map_view);
+		//nextButton.setBackgroundResource(R.drawable.homebutton2);
+		//System.out.println("Sets Background");
+		Intent mapView = new Intent( MainActivity.this, MapViewActivity.class );
+		startActivity( mapView );
+		return;
 	}
 
 	@Override

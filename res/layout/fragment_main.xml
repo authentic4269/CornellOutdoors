@@ -8,28 +8,42 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.cornelloutdoors.MainActivity$PlaceholderFragment" >
 
-    <Button
-        android:id="@+id/next"
+    
+        
+    <Button 
+        android:id="@+id/ranked_list"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/button"
-        android:onClick="cycleLocations" />
+        android:background="@drawable/homebutton1lighter"
+        android:layout_marginBottom="10dp"
+        />
     
+    <Button
+        android:id="@+id/map_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/ranked_list"
+        android:background="@drawable/homebutton2lighter"
+        android:onClick="showMap"
+        android:layout_marginBottom="10dp"
+        />
     
-    <fragment
-        class="com.google.android.gms.maps.MapFragment"
-        android:id="@+id/map"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/next"
-        android:name="com.google.android.gms.maps.MapFragment"/>
-
+    <Button
+        android:id="@+id/change_preferences"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/map_view"
+        android:background="@drawable/homebutton3lighter"
+        android:layout_marginBottom="10dp"
+        />
+    
     <Button
         android:id="@+id/history"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/next"
-        android:layout_toRightOf="@+id/next"
-        android:text="My Activity" />
+        android:layout_below="@id/change_preferences"
+        android:background="@drawable/homebutton4lighter"
+        />
+    
 
 </RelativeLayout>

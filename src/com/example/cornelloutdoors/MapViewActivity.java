@@ -47,7 +47,7 @@ public class MapViewActivity extends ActionBarActivity{
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.marker_information);
+        setContentView(R.layout.map_view);
         gs = (GlobalState) getApplication();
     }
 	

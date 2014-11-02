@@ -152,6 +152,7 @@ public class MapViewActivity extends ActionBarActivity{
 	{
 		mMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
 		LatLng curr;
+		System.out.println("Length:" + latLongs.size());
 		
 		//Haven't initialized anything yet
 		if ( latLongs.size() == 0 )

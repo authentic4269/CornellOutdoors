@@ -50,7 +50,8 @@ public class MainActivity extends ActionBarActivity {
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		gs = (GlobalState) getApplication();
-		boolean deleted = false;//deleteFile( configfile );
+		boolean deleted = false;
+		deleteFile( configfile );
 		if( deleted )
 		{
 			System.out.println( "deleted \n");

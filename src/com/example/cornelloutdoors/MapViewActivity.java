@@ -63,7 +63,7 @@ public class MapViewActivity extends ActionBarActivity{
 		String response = "";
 		try {
 			System.out.println( "Attempting to run background task \n");
-			String serverString = gs.getServer();
+			String serverString = gs.getServer() + "/getactivities"; 
 			String queryString = serverString + '?';
 			String line;
 			userActivities = gs.getUserActivities();

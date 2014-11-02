@@ -63,7 +63,7 @@ public class MapViewActivity extends ActionBarActivity{
 		String response = "";
 		try {
 			System.out.println( "Attempting to run background task \n");
-			String serverString = gs.getServer() + "/getactivities"; 
+			String serverString = gs.getServer() + "getactivities"; 
 			String queryString = serverString + '?';
 			String line;
 			userActivities = gs.getUserActivities();
@@ -77,7 +77,6 @@ public class MapViewActivity extends ActionBarActivity{
 			URLConnection connection = url.openConnection();
 			
 			BufferedReader input = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-			System.out.println("Getting Input");
 			while (null != ((line = input.readLine())))
 			{
 				response = response + line; 

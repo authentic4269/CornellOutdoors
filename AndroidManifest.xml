@@ -34,6 +34,7 @@
             </intent-filter>
         </activity>
         <activity android:name="com.example.cornelloutdoors.MarkerInformation" />
+        <activity android:name="com.example.cornelloutdoors.ListViewActivity" />
         <activity android:name="com.example.cornelloutdoors.SuggestActivity" />
         <activity android:name="com.example.cornelloutdoors.MapViewActivity"/>
         <service android:name="com.example.cornelloutdoors.TrackingService" />

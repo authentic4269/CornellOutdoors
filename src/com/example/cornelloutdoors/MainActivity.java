@@ -16,6 +16,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
+import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+
 import android.support.v7.app.ActionBarActivity;
 import android.support.v4.app.Fragment;
 import android.os.AsyncTask;
@@ -34,7 +41,7 @@ import android.content.Intent;
 
 
 public class MainActivity extends ActionBarActivity {
-	public LinkedList<String> userActivities = new LinkedList<String>();
+	public LinkedList<String> userActivities;
 	public HashMap<String, JSONObject> markers;
 	//public List<Marker> latLongs = new ArrayList<Marker>();
 	
@@ -50,14 +57,18 @@ public class MainActivity extends ActionBarActivity {
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
 		gs = (GlobalState) getApplication();
+		gs.activities = new HashMap<String, CornellActivity>();
+		userActivities = new LinkedList<String>();
+
 		boolean deleted = false;
 		deleteFile( configfile );
 		if( deleted )
 		{
 			System.out.println( "deleted \n");
 		}
-		super.onCreate(savedInstanceState);
+		
 		try {
 			BufferedReader settingsInput = new BufferedReader(new InputStreamReader(openFileInput(configfile), "UTF-8"));
 			String line;
@@ -67,11 +78,11 @@ public class MainActivity extends ActionBarActivity {
 				userActivities.add(line);
 			}
 			gs.setUserActivities(userActivities);
+			ActivityLoader loader = new ActivityLoader();
+			loader.execute();
 			setContentView(R.layout.activity_main);
-			if (savedInstanceState == null) {
-				getSupportFragmentManager().beginTransaction()
-						.add(R.id.container, new PlaceholderFragment()).commit();
-			}
+			setupMainButtons();
+			
 		} 
 		
 		
@@ -89,17 +100,19 @@ public class MainActivity extends ActionBarActivity {
 					settings);
 			settingsListView.setAdapter(adapter);
 			
-			final Button nextButton = (Button) findViewById(R.id.continuebutton);
+			final Button continueButton = (Button) findViewById(R.id.continuebutton);
 			
-			nextButton.setOnClickListener(new OnClickListener() {
+			continueButton.setOnClickListener(new OnClickListener() {
 
 				@Override
 				public void onClick(View arg0) {
+					userActivities = new LinkedList<String>();
 					for (int i = 0; i < adapter.getCount(); i++)
 					{
 						if (adapter.getItem(i).checked)
 						{
-							userActivities.add(adapter.getItem(i).name);
+							Setting s = adapter.getItem(i);
+							userActivities.add(s.name);
 						}
 					}
 					gs.setUserActivities(userActivities);
@@ -115,34 +128,68 @@ public class MainActivity extends ActionBarActivity {
 						e.printStackTrace();
 					}
 					setContentView(R.layout.activity_main);
-					if (savedInstanceState == null) {
-						getSupportFragmentManager().beginTransaction()
-								.add(R.id.container, new PlaceholderFragment()).commit();
-					}
+					ActivityLoader loader = new ActivityLoader();
+					loader.execute();
+					setupMainButtons();
+					
 				}
 				
 			});
 			
-			/*final Button historyButton = (Button) findViewById(R.id.history);
-			final Intent historyIntent = new Intent(this, HistoryActivity.class);
-			historyButton.setOnClickListener(new OnClickListener() {
 
-				@Override
-				public void onClick(View arg0) {
-					startActivity(historyIntent);
-				}
-				
-			});*/
 			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		Intent intent = new Intent(this, TrackingService.class);
-		startService(intent);
+
+
+		//Intent intent = new Intent(this, TrackingService.class);
+		//startService(intent);
 	}
 	
+	protected void setupMainButtons() {
+		final Button historyButton = (Button) findViewById(R.id.historybutton);
+		final Intent historyIntent = new Intent(this, HistoryActivity.class);
+		historyButton.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+				startActivity(historyIntent);
+			}
+			
+		});
+		
+		final Button listButton = (Button) findViewById(R.id.listbutton);
+		final Intent listIntent = new Intent(this, ListViewActivity.class);
+		
+		listButton.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+				startActivity(listIntent);
+			}
+			
+		});
+		
+		final Button settingsButton = (Button) findViewById(R.id.settingsbutton);
+		settingsButton.setOnClickListener(new OnClickListener() {
+			
+			public void onClick(View arg0) {
+				changePreferences();
+			}
+		});
+		
+		final Intent mapIntent = new Intent(this, MapViewActivity.class);
+		final Button mapButton = (Button) findViewById(R.id.mapbutton);
+		mapButton.setOnClickListener(new OnClickListener() {
+			
+			public void onClick(View arg0) {
+				startActivity(mapIntent);
+			}
+		});
+	}
+
 	//Show the Map View
 	public void showMap( View view )
 	{
@@ -152,7 +199,7 @@ public class MainActivity extends ActionBarActivity {
 	}
 	
 	//Show the Activity Preferences View
-	public void changePreferences( View view )
+	public void changePreferences()
 	{
 		setContentView(R.layout.activity_settings);
 		final ListView settingsListView = (ListView) findViewById(R.id.list);
@@ -201,8 +248,6 @@ public class MainActivity extends ActionBarActivity {
 					e.printStackTrace();
 				}
 				setContentView(R.layout.activity_main);
-				getSupportFragmentManager().beginTransaction()
-						.add(R.id.container, new PlaceholderFragment()).commit();
 			}
 			
 		});
@@ -265,6 +310,58 @@ public class MainActivity extends ActionBarActivity {
 		}
 		
 	}
+	
+	public class ActivityLoader extends AsyncTask<String, String, String> {
+
+		GlobalState gs; 
+		
+		@Override
+		protected String doInBackground(String... arg0) {
+			String response = "";
+			try {
+				System.out.println( "Attempting to run background task \n");
+				gs = (GlobalState) getApplication();
+				String serverString = gs.getServer() + "getactivities"; 
+				String queryString = serverString + '?';
+				String line;
+				userActivities = gs.getUserActivities();
+				Iterator<String> iter = userActivities.iterator();
+				while (iter.hasNext())
+				{
+					queryString = queryString + iter.next() + '&';
+				}
+				synchronized (gs.activities) {
+					URL url = new URL(serverString);
+					System.out.println( "URL: " + queryString);
+					URLConnection connection = url.openConnection();
+				
+					BufferedReader input = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+					while (null != ((line = input.readLine())))
+					{
+						response = response + line; 
+					}
+					gs.setActivities(new JSONArray(response));
+				}
+			} catch (Exception e) 
+			{
+				System.out.println( "Error with background task \n");
+				e.printStackTrace();
+			}
+			return response;
+		}
+		
+//		@Override
+//		protected void onPostExecute(String obj) {
+//			try {
+//				//gs.setActivities(new JSONArray(obj));
+//				
+//			} catch (JSONException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//			
+//		}
+	  }
 	
 	static public void setTouchListeners(View view)
 	{

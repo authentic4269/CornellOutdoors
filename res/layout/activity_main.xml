@@ -1,7 +1,38 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/container"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MainActivity"
-    tools:ignore="MergeRootFrame" />
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:gravity="center|center_horizontal|top"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cornell Outdoors"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <Button
+        android:id="@+id/mapbutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Map" />
+
+    <Button
+        android:id="@+id/listbutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Activities List" />
+
+    <Button
+        android:id="@+id/historybutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="History" />
+
+    <Button
+        android:id="@+id/settingsbutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Settings" />
+
+</LinearLayout>

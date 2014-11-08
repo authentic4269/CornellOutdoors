@@ -9,11 +9,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -23,12 +21,13 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
-
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
@@ -52,11 +51,11 @@ public class MapViewActivity extends ActionBarActivity{
     }
 	
 	private void initializeActivityList() {
-		ActivityLoader loader = new ActivityLoader();
+		MapActivityLoader loader = new MapActivityLoader();
 		loader.execute();
 	}
 
-  public class ActivityLoader extends AsyncTask<String, String, String> {
+public class MapActivityLoader extends AsyncTask<String, String, String> {
 
 	@Override
 	protected String doInBackground(String... arg0) {

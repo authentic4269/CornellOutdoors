@@ -16,13 +16,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
-import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
-
 import android.support.v7.app.ActionBarActivity;
 import android.support.v4.app.Fragment;
 import android.os.AsyncTask;
@@ -59,6 +52,7 @@ public class MainActivity extends ActionBarActivity {
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		gs = (GlobalState) getApplication();
+		gs.setActivityTypes(activityTypes);
 		gs.activities = new HashMap<String, CornellActivity>();
 		userActivities = new LinkedList<String>();
 
@@ -159,6 +153,21 @@ public class MainActivity extends ActionBarActivity {
 			}
 			
 		});
+		historyButton.setOnTouchListener(new View.OnTouchListener() {
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				Button mapButton = (Button) v.findViewById(R.id.historybutton);
+				if( event.getAction() == MotionEvent.ACTION_DOWN )
+				{
+					mapButton.setBackgroundResource(R.drawable.homebutton4);
+				}
+				else if( event.getAction() == MotionEvent.ACTION_UP )
+				{
+					mapButton.setBackgroundResource(R.drawable.homebutton4lighter);
+				}
+				return false;
+			}
+		});
 		
 		final Button listButton = (Button) findViewById(R.id.listbutton);
 		final Intent listIntent = new Intent(this, ListViewActivity.class);
@@ -172,11 +181,43 @@ public class MainActivity extends ActionBarActivity {
 			
 		});
 		
+		listButton.setOnTouchListener(new View.OnTouchListener() {
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				Button mapButton = (Button) v.findViewById(R.id.listbutton);
+				if( event.getAction() == MotionEvent.ACTION_DOWN )
+				{
+					mapButton.setBackgroundResource(R.drawable.homebutton1);
+				}
+				else if( event.getAction() == MotionEvent.ACTION_UP )
+				{
+					mapButton.setBackgroundResource(R.drawable.homebutton1lighter);
+				}
+				return false;
+			}
+		});
+		
 		final Button settingsButton = (Button) findViewById(R.id.settingsbutton);
 		settingsButton.setOnClickListener(new OnClickListener() {
 			
 			public void onClick(View arg0) {
+				System.out.println("ENTERS HERE");
 				changePreferences();
+			}
+		});
+		settingsButton.setOnTouchListener(new View.OnTouchListener() {
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				Button mapButton = (Button) v.findViewById(R.id.settingsbutton);
+				if( event.getAction() == MotionEvent.ACTION_DOWN )
+				{
+					mapButton.setBackgroundResource(R.drawable.homebutton3);
+				}
+				else if( event.getAction() == MotionEvent.ACTION_UP )
+				{
+					mapButton.setBackgroundResource(R.drawable.homebutton3lighter);
+				}
+				return false;
 			}
 		});
 		
@@ -186,6 +227,22 @@ public class MainActivity extends ActionBarActivity {
 			
 			public void onClick(View arg0) {
 				startActivity(mapIntent);
+			}
+		});
+		
+		mapButton.setOnTouchListener(new View.OnTouchListener() {
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				Button mapButton = (Button) v.findViewById(R.id.mapbutton);
+				if( event.getAction() == MotionEvent.ACTION_DOWN )
+				{
+					mapButton.setBackgroundResource(R.drawable.homebutton2);
+				}
+				else if( event.getAction() == MotionEvent.ACTION_UP )
+				{
+					mapButton.setBackgroundResource(R.drawable.homebutton2lighter);
+				}
+				return false;
 			}
 		});
 	}
@@ -201,56 +258,8 @@ public class MainActivity extends ActionBarActivity {
 	//Show the Activity Preferences View
 	public void changePreferences()
 	{
-		setContentView(R.layout.activity_settings);
-		final ListView settingsListView = (ListView) findViewById(R.id.list);
-		final ArrayList<Setting> settings = new ArrayList<Setting>();
-		final ArrayList<Integer> currentlyCheckedIndices = new ArrayList<Integer>();
-		for (int i = 0; i < activityTypes.length; i++)
-		{
-			settings.add(new Setting(activityTypes[i]));
-			if (userActivities.contains(activityTypes[i]))
-			{
-				currentlyCheckedIndices.add( (Integer) i );
-			}
-		}
-		final SettingArrayAdapter adapter = new SettingArrayAdapter(this, 
-				settings);
-		//Precheck the current activities
-		for(int i = 0; i < currentlyCheckedIndices.size(); i++)
-		{
-			adapter.getItem( currentlyCheckedIndices.get(i) ).checked = true;
-		}
-		
-		settingsListView.setAdapter(adapter);
-		final Button nextButton = (Button) findViewById(R.id.continuebutton);
-		nextButton.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View arg0) {
-				userActivities.clear();
-				for (int i = 0; i < adapter.getCount(); i++)
-				{
-					if (adapter.getItem(i).checked)
-					{
-						userActivities.add(adapter.getItem(i).name);
-					}
-				}
-				gs.setUserActivities(userActivities);
-				try {
-					FileOutputStream fos = openFileOutput(configfile, Context.MODE_PRIVATE);
-					for (int i = 0; i < userActivities.size(); i++)
-					{
-						fos.write((userActivities.get(i) + '\n').getBytes());
-					}
-					fos.close();
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				setContentView(R.layout.activity_main);
-			}
-			
-		});
+		Intent settingsView = new Intent( MainActivity.this, changepreferences.class );
+		startActivity( settingsView );
 		
 	}
 
@@ -290,7 +299,6 @@ public class MainActivity extends ActionBarActivity {
 			View rootView = inflater.inflate(R.layout.fragment_main, container,
 					false);
 			
-			setTouchListeners( rootView );
 			return rootView;
 		}
 		
@@ -299,7 +307,7 @@ public class MainActivity extends ActionBarActivity {
 	
 	
 	
-	public class Setting {
+	static public class Setting {
 		public String name;
 		public boolean checked;
 		
@@ -362,90 +370,6 @@ public class MainActivity extends ActionBarActivity {
 //			
 //		}
 	  }
-	
-	static public void setTouchListeners(View view)
-	{
-		try{
-			//ranked_list button
-			System.out.println(view);
-			Button mapButton = (Button) view.findViewById(R.id.ranked_list);
-			mapButton.setOnTouchListener(new View.OnTouchListener() {
-				@Override
-				public boolean onTouch(View v, MotionEvent event) {
-					Button mapButton = (Button) v.findViewById(R.id.ranked_list);
-					if( event.getAction() == MotionEvent.ACTION_DOWN )
-					{
-						mapButton.setBackgroundResource(R.drawable.homebutton1);
-					}
-					else if( event.getAction() == MotionEvent.ACTION_UP )
-					{
-						mapButton.setBackgroundResource(R.drawable.homebutton1lighter);
-					}
-					return false;
-				}
-			});
-			
-			//map_view button
-			mapButton = (Button) view.findViewById(R.id.map_view);
-			mapButton.setOnTouchListener(new View.OnTouchListener() {
-				@Override
-				public boolean onTouch(View v, MotionEvent event) {
-					Button mapButton = (Button) v.findViewById(R.id.map_view);
-					if( event.getAction() == MotionEvent.ACTION_DOWN )
-					{
-						mapButton.setBackgroundResource(R.drawable.homebutton2);
-					}
-					else if( event.getAction() == MotionEvent.ACTION_UP )
-					{
-						mapButton.setBackgroundResource(R.drawable.homebutton2lighter);
-					}
-					return false;
-				}
-			});
-			
-			//change_preferences button
-			mapButton = (Button) view.findViewById(R.id.change_preferences);
-			mapButton.setOnTouchListener(new View.OnTouchListener() {
-				@Override
-				public boolean onTouch(View v, MotionEvent event) {
-					Button mapButton = (Button) v.findViewById(R.id.change_preferences);
-					if( event.getAction() == MotionEvent.ACTION_DOWN )
-					{
-						mapButton.setBackgroundResource(R.drawable.homebutton3);
-					}
-					else if( event.getAction() == MotionEvent.ACTION_UP )
-					{
-						mapButton.setBackgroundResource(R.drawable.homebutton3lighter);
-					}
-					return false;
-				}
-			});
-			
-			//history button
-			mapButton = (Button) view.findViewById(R.id.history);
-			mapButton.setOnTouchListener(new View.OnTouchListener() {
-				@Override
-				public boolean onTouch(View v, MotionEvent event) {
-					Button mapButton = (Button) v.findViewById(R.id.history);
-					if( event.getAction() == MotionEvent.ACTION_DOWN )
-					{
-						mapButton.setBackgroundResource(R.drawable.homebutton4);
-					}
-					else if( event.getAction() == MotionEvent.ACTION_UP )
-					{
-						mapButton.setBackgroundResource(R.drawable.homebutton4lighter);
-					}
-					return false;
-				}
-			});
-			
-			
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-		}
-	}
 	 
 
 }

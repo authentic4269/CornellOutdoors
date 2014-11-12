@@ -37,6 +37,7 @@
         <activity android:name="com.example.cornelloutdoors.ListViewActivity" />
         <activity android:name="com.example.cornelloutdoors.SuggestActivity" />
         <activity android:name="com.example.cornelloutdoors.MapViewActivity"/>
+        <activity android:name="com.example.cornelloutdoors.changepreferences"/>
         <service android:name="com.example.cornelloutdoors.TrackingService" />
         <meta-data
             android:name="com.google.android.gms.version"

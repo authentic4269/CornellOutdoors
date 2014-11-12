@@ -120,12 +120,13 @@ public class ListViewActivity extends Activity {
 		}
 		
 		final Button suggestButton = (Button) findViewById(R.id.suggestbutton);
-		final Intent suggestIntent = new Intent(this, SuggestActivity.class);
+		final Intent mapView = new Intent(this, MapViewActivity.class);
 		suggestButton.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View arg0) {
-				startActivity(suggestIntent);
+				mapView.putExtra("Activity", "ListView");
+				startActivity(mapView);
 			}
 		});
 		

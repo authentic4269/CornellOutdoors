@@ -34,6 +34,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
+import android.widget.TextView;
 import android.support.v4.app.Fragment;
 
 public class MapViewActivity extends ActionBarActivity{
@@ -46,6 +47,7 @@ public class MapViewActivity extends ActionBarActivity{
 	public LinkedList<String> userActivities;
 	GlobalState gs;
 	Builder bounds;
+	String prevActivity;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -53,12 +55,23 @@ public class MapViewActivity extends ActionBarActivity{
         setContentView(R.layout.map_view);
         gs = (GlobalState) getApplication();
         bounds = new LatLngBounds.Builder();
+        Intent intent = getIntent();
+        prevActivity = intent.getStringExtra("Activity");
     }
 	
 	protected void onResume()
 	{
 		super.onResume();
 		try {
+			TextView suggestText = (TextView) findViewById(R.id.suggesttext);
+			if( prevActivity.equals("ListView") )
+			{
+				suggestText.setVisibility(View.VISIBLE);
+			}
+			else
+			{
+				suggestText.setVisibility(View.GONE);
+			}
 			mMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
 			synchronized( gs.activities )
 			{

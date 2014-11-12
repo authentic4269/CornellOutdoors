@@ -201,7 +201,6 @@ public class MainActivity extends ActionBarActivity {
 		settingsButton.setOnClickListener(new OnClickListener() {
 			
 			public void onClick(View arg0) {
-				System.out.println("ENTERS HERE");
 				changePreferences();
 			}
 		});
@@ -226,6 +225,7 @@ public class MainActivity extends ActionBarActivity {
 		mapButton.setOnClickListener(new OnClickListener() {
 			
 			public void onClick(View arg0) {
+				mapIntent.putExtra("Activity", "MainActivity");
 				startActivity(mapIntent);
 			}
 		});

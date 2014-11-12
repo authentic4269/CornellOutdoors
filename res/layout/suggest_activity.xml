@@ -7,7 +7,7 @@
     tools:context="com.example.cornelloutdoors.SuggestActivity" >
     
     <TextView
-        android:id="@+id/sa_title"
+        android:id="@+id/sa_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/suggest"
@@ -25,7 +25,7 @@
         android:layout_height="wrap_content"/>
     
     <EditText
-	    android:id="@+id/sa_opentime"
+	    android:id="@+id/sa_hours"
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
 	    android:hint="@string/opentime" />
@@ -34,8 +34,15 @@
 	    android:id="@+id/sa_description"
 	    android:layout_width="fill_parent"
 	    android:layout_height="wrap_content"
-	    android:layout_below="@id/sa_opentime"
+	    android:layout_below="@id/sa_hours"
 	    android:hint="@string/description" />
+    
+    <EditText
+	    android:id="@+id/sa_cost"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_below="@id/sa_description"
+	    android:hint="Cost" />
     
     <Button
         android:id="@+id/sa_enter"

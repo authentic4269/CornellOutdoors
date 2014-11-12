@@ -7,14 +7,27 @@
     tools:context="com.example.cornelloutdoors.ListViewActivity"
     tools:ignore="MergeRootFrame" >
 
-    <EditText
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" 
-		android:text="Search"
-    	android:id="@+id/search" >
-    	
-        <requestFocus />
+        android:layout_height="wrap_content">
+
+    <EditText
+        android:id="@+id/search"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:hint="Search" >
+       
     </EditText>
+    <Button
+        android:id="@+id/suggestbutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="+" />
+    </LinearLayout>
+
+
+
     <ListView
         android:id="@+id/list"
         android:layout_width="match_parent"

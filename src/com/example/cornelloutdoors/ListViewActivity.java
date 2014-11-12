@@ -9,6 +9,7 @@ import com.google.android.gms.maps.model.LatLng;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -80,7 +81,7 @@ public class ListViewActivity extends Activity {
 		setContentView(R.layout.activity_listview);
 		final ListView activitiesListView = (ListView) findViewById(R.id.list);
 		ArrayList<CornellActivity> activities = new ArrayList<CornellActivity>();
-		GlobalState gs = (GlobalState) getApplication();
+		final GlobalState gs = (GlobalState) getApplication();
 		synchronized (gs.activities) {
 			Iterator<CornellActivity> iter = gs.activities.values().iterator();
 			locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
@@ -93,6 +94,16 @@ public class ListViewActivity extends Activity {
 					activities, comparator, locationManager);
 			activitiesListView.setAdapter(adapter);
 		}
+		
+		final Button suggestButton = (Button) findViewById(R.id.suggestbutton);
+		final Intent suggestIntent = new Intent(this, SuggestActivity.class);
+		suggestButton.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+				startActivity(suggestIntent);
+			}
+		});
 		
 		final EditText search = (EditText) findViewById(R.id.search);
 		search.addTextChangedListener(new TextWatcher() {

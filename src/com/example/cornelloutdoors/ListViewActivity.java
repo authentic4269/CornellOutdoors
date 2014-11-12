@@ -12,6 +12,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -74,6 +75,29 @@ public class ListViewActivity extends Activity {
 		return 3961.0 * c;
 	}
 	
+	public class MapDisplay {
+		
+		Activity context;
+		LocationManager locman;
+		public MapDisplay(Activity a, LocationManager l)
+		{
+			locman = l;
+			context = a;
+		}
+		
+		public void showMap(CornellActivity dst)
+		{
+			Location loc = locman.getLastKnownLocation(locationManager.NETWORK_PROVIDER);
+			double mylong = loc.getLongitude();
+			double mylat = loc.getLatitude();
+			final Intent directionIntent = new Intent(android.content.Intent.ACTION_VIEW, 
+				    Uri.parse("http://maps.google.com/maps?saddr=" + mylat + "," + mylong + 
+				    		"&daddr=" + dst.latitude + "," + dst.longitude));
+			directionIntent.setClassName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity");
+			startActivity(directionIntent);
+		}
+	}
+	
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -91,7 +115,7 @@ public class ListViewActivity extends Activity {
 				activities.add(iter.next());
 			Collections.sort(activities, comparator);
 			adapter = new ActivityArrayAdapter(this, 
-					activities, comparator, locationManager);
+					activities, comparator, locationManager, new MapDisplay(this, locationManager));
 			activitiesListView.setAdapter(adapter);
 		}
 		

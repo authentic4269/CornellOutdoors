@@ -3,10 +3,13 @@ package com.example.cornelloutdoors;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -17,6 +20,7 @@ import android.widget.RatingBar.OnRatingBarChangeListener;
 import android.widget.TextView;
 
 import com.example.cornelloutdoors.ListViewActivity.CornellActivityCompare;
+import com.example.cornelloutdoors.ListViewActivity.MapDisplay;
 import com.example.cornelloutdoors.MainActivity.Setting;
 
 public class ActivityArrayAdapter extends ArrayAdapter<CornellActivity> {
@@ -24,12 +28,15 @@ public class ActivityArrayAdapter extends ArrayAdapter<CornellActivity> {
 	  private ArrayList<CornellActivity> displayList;
 	  private ArrayList<CornellActivity> dataList;
 	  private CornellActivityCompare comparator;
+	  private final MapDisplay map;
 	  protected LocationManager locationManager;
 	  
-	   public ActivityArrayAdapter(Activity context, ArrayList<CornellActivity> values, CornellActivityCompare comparator, LocationManager locationManager)
+	   public ActivityArrayAdapter(Activity context, ArrayList<CornellActivity> values,
+			   CornellActivityCompare comparator, LocationManager locationManager, MapDisplay mapDisplay)
 	   {
 		   super(context, R.layout.cornellactivity_row, values);
 		   this.context = context;
+		   this.map = mapDisplay;
 		   this.locationManager = locationManager;
 		   this.displayList = values;
 		   this.dataList = new ArrayList<CornellActivity>();
@@ -39,7 +46,7 @@ public class ActivityArrayAdapter extends ArrayAdapter<CornellActivity> {
 		   }
 	   }
 	   
-	   static class ViewHolder {
+	   class ViewHolder {
 		   protected TextView name;
 		   protected RatingBar rating;
 		   protected TextView type;
@@ -55,7 +62,7 @@ public class ActivityArrayAdapter extends ArrayAdapter<CornellActivity> {
 		    if (convertView == null) {
 		      LayoutInflater inflator = context.getLayoutInflater();
 		      view = inflator.inflate(R.layout.cornellactivity_row, null);
-		      CornellActivity thisactivity = displayList.get(position);
+		      final CornellActivity thisactivity = displayList.get(position);
 		      final ViewHolder viewHolder = new ViewHolder();
 		      viewHolder.name = (TextView) view.findViewById(R.id.name);
 		      viewHolder.type = (TextView) view.findViewById(R.id.type);
@@ -77,9 +84,17 @@ public class ActivityArrayAdapter extends ArrayAdapter<CornellActivity> {
 					double mylong = loc.getLongitude();
 					double mylat = loc.getLatitude();
 			        viewHolder.mapbutton.setText(ListViewActivity.distance(thisactivity.longitude, thisactivity.latitude, mylong, mylat) + " Miles");
+
+					viewHolder.mapbutton.setOnClickListener(new OnClickListener() {
+
+						@Override
+						public void onClick(View arg0) {
+							map.showMap(thisactivity);
+							
+						}
+						
+					});
 				}
-				
-		      
 		      view.setTag(viewHolder);
 		      return view;
 		    } else {
@@ -116,7 +131,18 @@ public class ActivityArrayAdapter extends ArrayAdapter<CornellActivity> {
 						double mylong = loc.getLongitude();
 						double mylat = loc.getLatitude();
 				        mapbutton.setText(ListViewActivity.distance(thisactivity.longitude, thisactivity.latitude, mylong, mylat) + " Miles");
+				        
+						mapbutton.setOnClickListener(new OnClickListener() {
+
+							@Override
+							public void onClick(View arg0) {
+								map.showMap(thisactivity);
+								
+							}
+							
+						});
 					}
+					
 					convertView.setTag(viewHolder);
 					return convertView;
 		    }

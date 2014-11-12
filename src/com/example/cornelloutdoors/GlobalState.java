@@ -17,9 +17,11 @@ public class GlobalState extends Application{
 	public HashMap<String, CornellActivity> activities;
 	public LinkedList<String> userActivities;
 	
+	public String[] activityTypes;
+	
 	
 	public String serverString = "http://sleepy-wave-3087.herokuapp.com/";
-	private String configfile = "cornelloutdoorsconfig";
+	public String configfile = "cornelloutdoorsconfig";
 	
 	public String getServer()
 	{
@@ -34,6 +36,12 @@ public class GlobalState extends Application{
 	public void setUserActivities(LinkedList<String> userActivities)
 	{
 		this.userActivities = userActivities;
+		return;
+	}
+	
+	public void setActivityTypes(String[] activityTypes)
+	{
+		this.activityTypes = activityTypes;
 		return;
 	}
 

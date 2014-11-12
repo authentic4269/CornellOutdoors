@@ -12,27 +12,33 @@
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <Button
-        android:id="@+id/mapbutton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Map" />
-
-    <Button
         android:id="@+id/listbutton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Activities List" />
-
+        android:background="@drawable/homebutton1lighter"
+        android:layout_marginBottom="10dp" />
+    
     <Button
-        android:id="@+id/historybutton"
+        android:id="@+id/mapbutton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="History" />
+        android:layout_below="@id/listbutton"
+        android:background="@drawable/homebutton2lighter"
+        android:layout_marginBottom="10dp"/>
 
     <Button
         android:id="@+id/settingsbutton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Settings" />
+        android:layout_below="@id/mapbutton"
+        android:background="@drawable/homebutton3lighter"
+        android:layout_marginBottom="10dp"/>
+
+    <Button
+        android:id="@+id/historybutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/settingsbutton"
+        android:background="@drawable/homebutton4lighter" />
 
 </LinearLayout>

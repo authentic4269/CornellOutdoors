@@ -8,5 +8,6 @@ public class CornellActivity {
 	public String description;
 	public Double longitude;
 	public Double latitude;
+	public Float rating;
 
 }

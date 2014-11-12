@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.RatingBar;
+import android.widget.RatingBar.OnRatingBarChangeListener;
 import android.widget.TextView;
 
 import com.example.cornelloutdoors.ListViewActivity.CornellActivityCompare;
@@ -80,10 +81,46 @@ public class ActivityArrayAdapter extends ArrayAdapter<CornellActivity> {
 				
 		      
 		      view.setTag(viewHolder);
+		      return view;
 		    } else {
-		      view = convertView;
+			      final CornellActivity thisactivity = displayList.get(position);
+			      final ViewHolder viewHolder = new ViewHolder();
+			      TextView name = (TextView) convertView.findViewById(R.id.name);
+			      TextView cost = (TextView) convertView.findViewById(R.id.cost);
+			      TextView type = (TextView) convertView.findViewById(R.id.type);
+			      TextView description = (TextView) convertView.findViewById(R.id.description);
+			      TextView hours = (TextView) convertView.findViewById(R.id.hours);
+			      RatingBar rating = (RatingBar) convertView.findViewById(R.id.rating);
+			      Button mapbutton = (Button) convertView.findViewById(R.id.map);
+			      
+			      hours.setText("Hours: " + thisactivity.hours);
+			     description.setText(thisactivity.description);
+			      name.setText(thisactivity.name);
+			      cost.setText("Cost: " + thisactivity.cost);
+			      type.setText("Type: " + thisactivity.type);
+			      if (thisactivity.rating != null)
+			    	  rating.setRating(thisactivity.rating);
+			      rating.setOnRatingBarChangeListener(new OnRatingBarChangeListener() {
+
+					@Override
+					public void onRatingChanged(RatingBar arg0, float arg1,
+							boolean arg2) {
+						thisactivity.rating = arg1;
+						
+					}
+			    	  
+			      });
+			      Location loc = locationManager.getLastKnownLocation(locationManager.NETWORK_PROVIDER);
+					if (loc != null)
+					{
+						double mylong = loc.getLongitude();
+						double mylat = loc.getLatitude();
+				        mapbutton.setText(ListViewActivity.distance(thisactivity.longitude, thisactivity.latitude, mylong, mylat) + " Miles");
+					}
+					convertView.setTag(viewHolder);
+					return convertView;
 		    }
-		    return view;
+		   
 	   }
 
 	public void filter(String t) {

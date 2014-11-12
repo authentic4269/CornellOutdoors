@@ -11,5 +11,7 @@
     <string name="opentime">Times Open</string>
     <string name="description">Description of Activity</string>
     <string name="suggestenter">Enter</string>
+    <string name="hours">When is this activity open?</string>
+    <string name="name">Name of Activity</string>
 
 </resources>

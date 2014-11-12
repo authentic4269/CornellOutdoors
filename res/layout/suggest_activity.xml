@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?><LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -7,20 +6,20 @@
     tools:context="com.example.cornelloutdoors.SuggestActivity" >
     
     <TextView
-        android:id="@+id/sa_name"
+        android:id="@+id/sa"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/suggest"
         android:textAppearance="?android:attr/textAppearanceMedium" />
     
-    <EditText
-	    android:id="@+id/sa_location"
+     <EditText
+	    android:id="@+id/sa_name"
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
-	    android:hint="@string/location" />
-    
+	    android:hint="@string/name" />
+        
     <Spinner 
-        android:id="@+id/sa_activity"
+        android:id="@+id/sa_type"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
     
@@ -28,7 +27,7 @@
 	    android:id="@+id/sa_hours"
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
-	    android:hint="@string/opentime" />
+	    android:hint="@string/hours" />
     
     <EditText
 	    android:id="@+id/sa_description"

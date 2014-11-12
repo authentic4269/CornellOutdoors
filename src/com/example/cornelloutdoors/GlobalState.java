@@ -67,6 +67,11 @@ public class GlobalState extends Application{
 		}
 	}
 	
+	public HashMap<String, CornellActivity> getActivities()
+	{
+		return this.activities;
+	}
+	
 	
 
 }

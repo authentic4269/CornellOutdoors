@@ -14,9 +14,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnCameraChangeListener;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.LatLngBounds.Builder;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
@@ -39,87 +42,60 @@ public class MapViewActivity extends ActionBarActivity{
 	public List<Marker> latLongs = new ArrayList<Marker>();
 	public int cycleIndex;
 	public JSONArray locationsArray;
-	public HashMap<String, JSONObject> markers;
+	public HashMap<String, CornellActivity> markers;
 	public LinkedList<String> userActivities;
 	GlobalState gs;
+	Builder bounds;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.map_view);
         gs = (GlobalState) getApplication();
+        bounds = new LatLngBounds.Builder();
     }
 	
-	private void initializeActivityList() {
-		MapActivityLoader loader = new MapActivityLoader();
-		loader.execute();
-	}
-
-public class MapActivityLoader extends AsyncTask<String, String, String> {
-
-	@Override
-	protected String doInBackground(String... arg0) {
-		String response = "";
-		try {
-			System.out.println( "Attempting to run background task \n");
-			String serverString = gs.getServer() + "getactivities"; 
-			String queryString = serverString + '?';
-			String line;
-			userActivities = gs.getUserActivities();
-			Iterator<String> iter = userActivities.iterator();
-			while (iter.hasNext())
-			{
-				queryString = queryString + iter.next() + '&';
-			}
-			URL url = new URL(queryString);
-			System.out.println( "URL: " + queryString);
-			URLConnection connection = url.openConnection();
-			
-			BufferedReader input = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-			while (null != ((line = input.readLine())))
-			{
-				response = response + line; 
-			}
-		} catch (Exception e) 
-		{
-			System.out.println( "Error with background task \n");
-			e.printStackTrace();
-		}
-		return response;
-	}
-	
-	@Override
-	protected void onPostExecute(String obj) {
+	protected void onResume()
+	{
+		super.onResume();
 		try {
 			mMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
-			locationsArray = new JSONArray(obj);
-			JSONObject m;
-			markers = new HashMap<String, JSONObject>();
-			System.out.println("Placing Markers\n");
-			for (int i = 0; i < locationsArray.length(); i++)
+			synchronized( gs.activities )
 			{
-				m = locationsArray.getJSONObject(i);
-				Double lat = Double.parseDouble(m.getString("latitude"));
-				Double lon = Double.parseDouble(m.getString("longitude"));
+				markers = gs.getActivities();
+			}
+			Iterator<CornellActivity> iter = markers.values().iterator();
+			while( iter.hasNext() )
+			{
+				CornellActivity curActivity = iter.next();
+				Double lat = curActivity.latitude;
+				Double lon = curActivity.longitude;
 				LatLng loc = new LatLng(lat, lon);
 				
 				Marker newmarker = mMap.addMarker(new MarkerOptions()
 						.position(loc)
-						.title(m.getString("name")));
+						.title(curActivity.name));
+				
+				bounds.include( new LatLng(lat, lon) );
 				
 				latLongs.add( newmarker );
-
-				markers.put(m.getString("name"), m);
-				
 			}
+			mMap.setOnCameraChangeListener( new OnCameraChangeListener()
+			{
+				@Override
+				public void onCameraChange(CameraPosition arg0)
+				{
+					mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds.build(), 50));
+					mMap.setOnCameraChangeListener( null );
+				}
+			});
+			
 			mMap.setOnInfoWindowClickListener(new OnInfoWindowClickListener() {
 
 				public void onInfoWindowClick(Marker marker) {
-					JSONObject markerData = markers.get(marker.getTitle());
-					System.out.println(markerData);
 					Intent informationScreen = new Intent(MapViewActivity.this, MarkerInformation.class);
 					
-					informationScreen.putExtra("info", markerData.toString());
+					informationScreen.putExtra("info", marker.getTitle());
 					startActivity( informationScreen );
 					return;
 				}
@@ -138,13 +114,13 @@ public class MapActivityLoader extends AsyncTask<String, String, String> {
 					return;
 				}
 			});
-		} catch (JSONException e) {
+			
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
 	}
-  }
+	
 
 	public void cycleLocations(View view)
 	{
@@ -155,7 +131,7 @@ public class MapActivityLoader extends AsyncTask<String, String, String> {
 		//Haven't initialized anything yet
 		if ( latLongs.size() == 0 )
 		{
-			initializeActivityList();
+			//initializeActivityList();
 			LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 			Location loc = locationManager.getLastKnownLocation(locationManager.NETWORK_PROVIDER);
 	

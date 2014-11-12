@@ -50,7 +50,7 @@ public class SuggestActivity extends ActionBarActivity {
 	public void entered(View view)
 	{
 	}
-
+	
 	public class SubmitActivity extends AsyncTask<CornellActivity, Void, Void> {
 
 		@Override

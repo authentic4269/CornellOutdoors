@@ -15,7 +15,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ListView;
 
-public class changepreferences extends ActionBarActivity{
+public class ChangePreferences extends ActionBarActivity{
 
 		GlobalState gs;
 		protected void onCreate( Bundle savedInstanceSpace )

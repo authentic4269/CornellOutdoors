@@ -258,7 +258,7 @@ public class MainActivity extends ActionBarActivity {
 	//Show the Activity Preferences View
 	public void changePreferences()
 	{
-		Intent settingsView = new Intent( MainActivity.this, changepreferences.class );
+		Intent settingsView = new Intent( MainActivity.this, ChangePreferences.class );
 		startActivity( settingsView );
 		
 	}

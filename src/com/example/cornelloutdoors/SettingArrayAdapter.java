@@ -3,13 +3,16 @@ package com.example.cornelloutdoors;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.content.res.AssetManager;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.TextView;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 
 import com.example.cornelloutdoors.MainActivity.Setting;
@@ -17,12 +20,14 @@ import com.example.cornelloutdoors.MainActivity.Setting;
 public class SettingArrayAdapter extends ArrayAdapter<Setting> {
 	  private final Activity context;
 	  private ArrayList<Setting> list;
+	  AssetManager mngr;
 	  
 	   public SettingArrayAdapter(Activity context, ArrayList<Setting> values)
 	   {
 		   super(context, R.layout.setting_row, values);
 		   this.context = context;
 		   this.list = values;
+		   mngr = context.getAssets();
 	   }
 	   
 	   static class ViewHolder {
@@ -37,6 +42,7 @@ public class SettingArrayAdapter extends ArrayAdapter<Setting> {
 		      view = inflator.inflate(R.layout.setting_row, null);
 		      final ViewHolder viewHolder = new ViewHolder();
 		      viewHolder.checkbox = (CheckBox) view.findViewById(R.id.checkbox);
+		      System.out.println("ENters Here");
 		      viewHolder.checkbox
 		          .setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
@@ -45,7 +51,7 @@ public class SettingArrayAdapter extends ArrayAdapter<Setting> {
 		                boolean isChecked) {
 		              Setting element = (Setting) viewHolder.checkbox
 		                  .getTag();
-		              element.checked = buttonView.isChecked();
+		              element.checked = isChecked;
 		              
 		              if( isChecked )
 		              {
@@ -65,8 +71,20 @@ public class SettingArrayAdapter extends ArrayAdapter<Setting> {
 		    ViewHolder holder = (ViewHolder) view.getTag();
 		    holder.checkbox.setText(list.get(position).name);
 		    holder.checkbox.setTextColor(Color.WHITE);
-		    holder.checkbox.setChecked(list.get(position).checked);
+			Typeface font = Typeface.createFromAsset(mngr, "ClementePDae-Light.ttf");
+			holder.checkbox.setTypeface(font);
 		    holder.checkbox.setBackgroundResource(R.drawable.lightblue);
+		    holder.checkbox.setChecked(list.get(position).checked);
+		    
+		    
+			if( list.get(position).checked )
+			{
+				holder.checkbox.setBackgroundResource(R.drawable.darkblue);
+			}
+			else
+			{
+				holder.checkbox.setBackgroundResource(R.drawable.lightblue);
+			}
 		    holder.checkbox.setOnClickListener( new View.OnClickListener(){
 		    	@Override
 		    	public void onClick(View arg0){

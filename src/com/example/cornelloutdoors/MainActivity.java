@@ -29,8 +29,10 @@ import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -84,6 +86,10 @@ public class MainActivity extends ActionBarActivity {
 		{
 			// have the user set up their initial settings
 			setContentView(R.layout.activity_settings);
+			final TextView initialQuestion = (TextView) findViewById(R.id.textView1);
+			Typeface font = Typeface.createFromAsset(getAssets(), "ClementePDae-Light.ttf");
+			initialQuestion.setTypeface(font);
+			
 			final ListView settingsListView = (ListView) findViewById(R.id.list);
 			final ArrayList<Setting> settings = new ArrayList<Setting>();
 			for (int i = 0; i < activityTypes.length; i++)

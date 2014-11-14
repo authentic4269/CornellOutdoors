@@ -8,12 +8,14 @@ import com.example.cornelloutdoors.MainActivity.Setting;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 
 public class ChangePreferences extends ActionBarActivity{
 
@@ -27,6 +29,10 @@ public class ChangePreferences extends ActionBarActivity{
 			synchronized (gs.activities) {
 				userActivities = gs.getUserActivities();
 			}
+			final TextView initialQuestion = (TextView) findViewById(R.id.textView1);
+			Typeface font = Typeface.createFromAsset(getAssets(), "ClementePDae-Light.ttf");
+			initialQuestion.setTypeface(font);
+			
 			final String configfile = gs.configfile;
 			final String[] activityTypes = gs.activityTypes;
 			

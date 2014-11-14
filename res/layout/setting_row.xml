@@ -10,6 +10,8 @@
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:button="@android:color/transparent"
+        android:gravity="center"
+        android:textSize="30dp"
         android:text="Medium Text"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 

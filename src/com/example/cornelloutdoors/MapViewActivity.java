@@ -98,7 +98,10 @@ public class MapViewActivity extends ActionBarActivity{
 				@Override
 				public void onCameraChange(CameraPosition arg0)
 				{
-					mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds.build(), 50));
+					if( latLongs.size() != 0 )
+					{
+						mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds.build(), 50));
+					}
 					mMap.setOnCameraChangeListener( null );
 				}
 			});

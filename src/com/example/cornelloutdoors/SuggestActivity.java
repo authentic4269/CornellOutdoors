@@ -12,6 +12,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.example.cornelloutdoors.MainActivity.ActivityLoader;
 import com.google.android.gms.maps.model.LatLng;
 
 import android.content.Context;
@@ -22,7 +23,9 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -37,6 +40,8 @@ public class SuggestActivity extends ActionBarActivity {
         setContentView(R.layout.suggest_activity);
         GlobalState gs = (GlobalState) getApplication();
         ArrayList<String> activities = (ArrayList<String>) getIntent().getSerializableExtra("activities");
+        final Double lat = (Double) getIntent().getDoubleExtra("lat", 0.0);
+        final Double lon = (Double) getIntent().getDoubleExtra("lon", 0.0);
         
         //Set Text
         final TextView suggest = (TextView) findViewById(R.id.sa);
@@ -54,8 +59,12 @@ public class SuggestActivity extends ActionBarActivity {
 		final EditText cost = (EditText) findViewById(R.id.sa_cost);
 		cost.setTypeface(gs.getFont());
 		
+		final Button enter = (Button) findViewById(R.id.sa_enter);
+		
+
+		
         //Populate Spinner
-        Spinner spinner = (Spinner) findViewById(R.id.sa_type);
+        final Spinner spinner = (Spinner) findViewById(R.id.sa_type);
         List<String> typeList = new ArrayList<String>();
         Iterator<String> iter = gs.userActivities.iterator();
         while (iter.hasNext())
@@ -64,6 +73,23 @@ public class SuggestActivity extends ActionBarActivity {
         		new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, typeList);
         spinner.setAdapter( typeAdapter );
         
+		enter.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+				CornellActivity a = new CornellActivity();
+				a.name = name.getText().toString();
+				a.hours = hours.getText().toString();
+				a.description = description.getText().toString();
+				a.cost = cost.getText().toString();
+				a.type = spinner.getSelectedItem().toString();
+				a.longitude = lon;
+				a.latitude = lat;
+				SubmitActivity loader = new SubmitActivity();
+				loader.execute(a);
+			}
+			
+		});
     }
 	
 	public void entered(View view)

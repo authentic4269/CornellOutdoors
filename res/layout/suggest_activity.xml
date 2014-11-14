@@ -62,8 +62,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/sa_description"
         android:text="@string/suggestenter"
-        android:gravity="center"
-        android:onClick="entered"/>
+        android:gravity="center"/>
         
     
 </LinearLayout>

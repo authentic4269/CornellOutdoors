@@ -49,10 +49,10 @@ public class ListViewActivity extends Activity {
 			double comparison = distance(arg1.longitude, arg1.latitude, mylong, mylat) - 
 					distance(arg0.longitude, arg0.latitude, mylong, mylat);
 			if (comparison < 0)
-				return -1;
+				return 1;
 			else if (comparison == 0)
 				return 0;
-			return 1;
+			return -1;
 		}
 		
 	}

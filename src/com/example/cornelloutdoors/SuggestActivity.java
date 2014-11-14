@@ -19,9 +19,11 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -36,6 +38,22 @@ public class SuggestActivity extends ActionBarActivity {
         GlobalState gs = (GlobalState) getApplication();
         ArrayList<String> activities = (ArrayList<String>) getIntent().getSerializableExtra("activities");
         
+        //Set Text
+        final TextView suggest = (TextView) findViewById(R.id.sa);
+		suggest.setTypeface(gs.getFont());
+		
+		final EditText name = (EditText) findViewById(R.id.sa_name);
+		name.setTypeface(gs.getFont());
+		
+		final EditText hours = (EditText) findViewById(R.id.sa_hours);
+		hours.setTypeface(gs.getFont());
+		
+		final EditText description = (EditText) findViewById(R.id.sa_description);
+		description.setTypeface(gs.getFont());
+		
+		final EditText cost = (EditText) findViewById(R.id.sa_cost);
+		cost.setTypeface(gs.getFont());
+		
         //Populate Spinner
         Spinner spinner = (Spinner) findViewById(R.id.sa_type);
         List<String> typeList = new ArrayList<String>();
@@ -45,6 +63,7 @@ public class SuggestActivity extends ActionBarActivity {
         ArrayAdapter<String> typeAdapter = 
         		new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, typeList);
         spinner.setAdapter( typeAdapter );
+        
     }
 	
 	public void entered(View view)

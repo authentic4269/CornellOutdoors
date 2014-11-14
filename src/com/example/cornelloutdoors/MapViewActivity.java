@@ -27,6 +27,7 @@ import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.AsyncTask;
@@ -57,6 +58,10 @@ public class MapViewActivity extends ActionBarActivity{
         bounds = new LatLngBounds.Builder();
         Intent intent = getIntent();
         prevActivity = intent.getStringExtra("Activity");
+        
+        setTitle( "Map View" );
+        
+        getSupportActionBar().setIcon(R.drawable.browngreenlogo);
     }
 	
 	protected void onResume()
@@ -66,6 +71,7 @@ public class MapViewActivity extends ActionBarActivity{
 			TextView suggestText = (TextView) findViewById(R.id.suggesttext);
 			if( prevActivity.equals("ListView") )
 			{
+				suggestText.setTypeface(gs.getFont());
 				suggestText.setVisibility(View.VISIBLE);
 			}
 			else

@@ -42,7 +42,7 @@ public class SettingArrayAdapter extends ArrayAdapter<Setting> {
 		      view = inflator.inflate(R.layout.setting_row, null);
 		      final ViewHolder viewHolder = new ViewHolder();
 		      viewHolder.checkbox = (CheckBox) view.findViewById(R.id.checkbox);
-		      System.out.println("ENters Here");
+		      
 		      viewHolder.checkbox
 		          .setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 

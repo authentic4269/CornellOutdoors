@@ -16,21 +16,29 @@
         android:textSize="30dp"
         android:layout_marginLeft="5dp"
         android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="5dp"
         android:gravity="center"
         android:textAppearance="?android:attr/textAppearanceMedium" />
+    
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/choosemore"
+        />
     
     <ListView
         android:id="@+id/list"
         android:layout_width="match_parent"
-        android:layout_height="400dp"
+        android:layout_height="380dp"
         android:divider="@null"
         android:orientation="vertical" >
     </ListView>
 
     <Button
         android:id="@+id/continuebutton"
-        android:layout_width="wrap_content"
+        android:layout_width="180dp"
         android:layout_height="wrap_content"
         android:layout_below="@id/list"
         android:layout_gravity="center"

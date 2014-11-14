@@ -28,6 +28,8 @@ public class MarkerInformation extends ActionBarActivity {
         	markers = gs.getActivities();
         }
         
+        setTitle("Activity Information");
+        
         curActivity = markers.get( markerInfo );
 
         displayInformation();
@@ -40,11 +42,16 @@ public class MarkerInformation extends ActionBarActivity {
 			TextView hours = (TextView) findViewById(R.id.hours);
 			TextView cost = (TextView) findViewById(R.id.cost);
 			TextView description = (TextView) findViewById(R.id.description);
-		
+			
+			
 			place.setText(curActivity.name);
-			hours.setText(curActivity.hours);
-			cost.setText(curActivity.cost);
-			description.setText(curActivity.description);
+			place.setTypeface(gs.getFont());
+			hours.setText("Hours: " + curActivity.hours);
+			hours.setTypeface(gs.getFont());
+			cost.setText("Cost: " + curActivity.cost);
+			cost.setTypeface(gs.getFont());
+			description.setText("Description:\n" + curActivity.description);
+			description.setTypeface(gs.getFont());
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

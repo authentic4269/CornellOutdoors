@@ -30,8 +30,13 @@ public class ChangePreferences extends ActionBarActivity{
 				userActivities = gs.getUserActivities();
 			}
 			final TextView initialQuestion = (TextView) findViewById(R.id.textView1);
-			Typeface font = Typeface.createFromAsset(getAssets(), "ClementePDae-Light.ttf");
-			initialQuestion.setTypeface(font);
+			initialQuestion.setTypeface( gs.getFont() );
+			
+			final TextView chooseMore = (TextView) findViewById(R.id.textView2);
+			chooseMore.setTypeface( gs.getFont() );
+			
+			Button finish = (Button) findViewById(R.id.continuebutton);
+			finish.setTypeface( gs.getFont() );
 			
 			final String configfile = gs.configfile;
 			final String[] activityTypes = gs.activityTypes;

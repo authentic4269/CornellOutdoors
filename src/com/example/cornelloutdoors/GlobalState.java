@@ -11,6 +11,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import android.app.Application;
+import android.graphics.Typeface;
 
 public class GlobalState extends Application{
 	// activities really should be a linked list
@@ -18,6 +19,7 @@ public class GlobalState extends Application{
 	public LinkedList<String> userActivities;
 	
 	public String[] activityTypes;
+	public Typeface font;
 	
 	
 	public String serverString = "http://sleepy-wave-3087.herokuapp.com/";
@@ -70,6 +72,16 @@ public class GlobalState extends Application{
 	public HashMap<String, CornellActivity> getActivities()
 	{
 		return this.activities;
+	}
+	
+	public void setFont( Typeface font )
+	{
+		this.font = font;
+	}
+	
+	public Typeface getFont()
+	{
+		return font;
 	}
 	
 	

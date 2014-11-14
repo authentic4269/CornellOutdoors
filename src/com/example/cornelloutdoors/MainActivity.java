@@ -57,6 +57,9 @@ public class MainActivity extends ActionBarActivity {
 		gs.setActivityTypes(activityTypes);
 		gs.activities = new HashMap<String, CornellActivity>();
 		userActivities = new LinkedList<String>();
+		Typeface font = Typeface.createFromAsset(getAssets(), "ClementePDae-Light.ttf");
+		gs.setFont( font );
+		
 
 		boolean deleted = false;
 		deleteFile( configfile );
@@ -86,9 +89,13 @@ public class MainActivity extends ActionBarActivity {
 		{
 			// have the user set up their initial settings
 			setContentView(R.layout.activity_settings);
+			Button finish = (Button) findViewById(R.id.continuebutton);
+			finish.setTypeface(font);
 			final TextView initialQuestion = (TextView) findViewById(R.id.textView1);
-			Typeface font = Typeface.createFromAsset(getAssets(), "ClementePDae-Light.ttf");
 			initialQuestion.setTypeface(font);
+			
+			final TextView chooseMore = (TextView) findViewById(R.id.textView2);
+			chooseMore.setTypeface( font );
 			
 			final ListView settingsListView = (ListView) findViewById(R.id.list);
 			final ArrayList<Setting> settings = new ArrayList<Setting>();

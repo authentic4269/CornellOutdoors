@@ -30,6 +30,7 @@ public class ActivityArrayAdapter extends ArrayAdapter<CornellActivity> {
 	  private CornellActivityCompare comparator;
 	  private final MapDisplay map;
 	  protected LocationManager locationManager;
+	  private GlobalState gs;
 	  
 	   public ActivityArrayAdapter(Activity context, ArrayList<CornellActivity> values,
 			   CornellActivityCompare comparator, LocationManager locationManager, MapDisplay mapDisplay)
@@ -40,6 +41,7 @@ public class ActivityArrayAdapter extends ArrayAdapter<CornellActivity> {
 		   this.locationManager = locationManager;
 		   this.displayList = values;
 		   this.dataList = new ArrayList<CornellActivity>();
+		   this.gs = (GlobalState) context.getApplication();
 		   for (CornellActivity a : values)
 		   {
 			   dataList.add(a);
@@ -51,9 +53,9 @@ public class ActivityArrayAdapter extends ArrayAdapter<CornellActivity> {
 		   protected RatingBar rating;
 		   protected TextView type;
 		   protected TextView cost;
-		   protected TextView description;
 		   protected TextView hours;
-		protected Button mapbutton;
+		   protected TextView distance;
+		   protected Button mapbutton;
 	   }
 	   
 	   @Override
@@ -64,27 +66,33 @@ public class ActivityArrayAdapter extends ArrayAdapter<CornellActivity> {
 		      view = inflator.inflate(R.layout.cornellactivity_row, null);
 		      final CornellActivity thisactivity = displayList.get(position);
 		      final ViewHolder viewHolder = new ViewHolder();
-		      viewHolder.name = (TextView) view.findViewById(R.id.name);
+		      
 		      viewHolder.type = (TextView) view.findViewById(R.id.type);
+		      viewHolder.name = (TextView) view.findViewById(R.id.name);
 		      viewHolder.cost = (TextView) view.findViewById(R.id.cost);
-		      viewHolder.description = (TextView) view.findViewById(R.id.description);
 		      viewHolder.hours = (TextView) view.findViewById(R.id.hours);
 		      viewHolder.rating = (RatingBar) view.findViewById(R.id.rating);
 		      viewHolder.mapbutton = (Button) view.findViewById(R.id.map);
+		      viewHolder.distance = (TextView) view.findViewById(R.id.distance);
 		      
-		      viewHolder.hours.setText("Hours: " + thisactivity.hours);
-		      viewHolder.description.setText(thisactivity.description);
+		      viewHolder.type.setText(thisactivity.type + ",");
+		      viewHolder.hours.setText(thisactivity.hours);
 		      viewHolder.name.setText(thisactivity.name);
-		      viewHolder.cost.setText("Cost: " + thisactivity.cost);
-		      viewHolder.type.setText("Type: " + thisactivity.type);
+		      viewHolder.cost.setText(thisactivity.cost);
+		      
+		      
+		      viewHolder.hours.setTypeface(gs.getFont());
+		      viewHolder.name.setTypeface(gs.getFont());
+		      viewHolder.cost.setTypeface(gs.getFont());
+		      viewHolder.type.setTypeface(gs.getFont());
 		      
 		      Location loc = locationManager.getLastKnownLocation(locationManager.NETWORK_PROVIDER);
 				if (loc != null)
 				{
 					double mylong = loc.getLongitude();
 					double mylat = loc.getLatitude();
-			        viewHolder.mapbutton.setText(ListViewActivity.distance(thisactivity.longitude, thisactivity.latitude, mylong, mylat) + " Miles");
-
+			        viewHolder.distance.setText(ListViewActivity.distance(thisactivity.longitude, thisactivity.latitude, mylong, mylat) + " mi");
+			        viewHolder.distance.setTypeface(gs.getFont());
 					viewHolder.mapbutton.setOnClickListener(new OnClickListener() {
 
 						@Override
@@ -103,16 +111,16 @@ public class ActivityArrayAdapter extends ArrayAdapter<CornellActivity> {
 			      TextView name = (TextView) convertView.findViewById(R.id.name);
 			      TextView cost = (TextView) convertView.findViewById(R.id.cost);
 			      TextView type = (TextView) convertView.findViewById(R.id.type);
-			      TextView description = (TextView) convertView.findViewById(R.id.description);
 			      TextView hours = (TextView) convertView.findViewById(R.id.hours);
 			      RatingBar rating = (RatingBar) convertView.findViewById(R.id.rating);
 			      Button mapbutton = (Button) convertView.findViewById(R.id.map);
+			      viewHolder.distance = (TextView) convertView.findViewById(R.id.distance);
 			      
-			      hours.setText("Hours: " + thisactivity.hours);
-			     description.setText(thisactivity.description);
+			      type.setText(thisactivity.type + ",");
 			      name.setText(thisactivity.name);
-			      cost.setText("Cost: " + thisactivity.cost);
-			      type.setText("Type: " + thisactivity.type);
+			      hours.setText(thisactivity.hours);
+			      cost.setText(thisactivity.cost);
+			      
 			      if (thisactivity.rating != null)
 			    	  rating.setRating(thisactivity.rating);
 			      rating.setOnRatingBarChangeListener(new OnRatingBarChangeListener() {
@@ -130,8 +138,8 @@ public class ActivityArrayAdapter extends ArrayAdapter<CornellActivity> {
 					{
 						double mylong = loc.getLongitude();
 						double mylat = loc.getLatitude();
-				        mapbutton.setText(ListViewActivity.distance(thisactivity.longitude, thisactivity.latitude, mylong, mylat) + " Miles");
-				        
+				        viewHolder.distance.setText(ListViewActivity.distance(thisactivity.longitude, thisactivity.latitude, mylong, mylat) + " mi");
+				        viewHolder.distance.setTypeface( gs.getFont() );
 						mapbutton.setOnClickListener(new OnClickListener() {
 
 							@Override

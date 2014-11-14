@@ -21,13 +21,14 @@ public class SettingArrayAdapter extends ArrayAdapter<Setting> {
 	  private final Activity context;
 	  private ArrayList<Setting> list;
 	  AssetManager mngr;
+	  GlobalState gs;
 	  
 	   public SettingArrayAdapter(Activity context, ArrayList<Setting> values)
 	   {
 		   super(context, R.layout.setting_row, values);
 		   this.context = context;
 		   this.list = values;
-		   mngr = context.getAssets();
+		   gs = (GlobalState) context.getApplication();
 	   }
 	   
 	   static class ViewHolder {
@@ -71,8 +72,7 @@ public class SettingArrayAdapter extends ArrayAdapter<Setting> {
 		    ViewHolder holder = (ViewHolder) view.getTag();
 		    holder.checkbox.setText(list.get(position).name);
 		    holder.checkbox.setTextColor(Color.WHITE);
-			Typeface font = Typeface.createFromAsset(mngr, "ClementePDae-Light.ttf");
-			holder.checkbox.setTypeface(font);
+			holder.checkbox.setTypeface(gs.getFont());
 		    holder.checkbox.setBackgroundResource(R.drawable.lightblue);
 		    holder.checkbox.setChecked(list.get(position).checked);
 		    

@@ -72,7 +72,7 @@ public class ListViewActivity extends Activity {
 		double dlat = lat2 - lat1;
 		double a = (Math.pow(Math.sin(dlat/2), 2) + Math.cos(lat1) * Math.cos(lat2)*(Math.pow(Math.sin(dlon/2),2)));
 		double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-		return 3961.0 * c;
+		return Math.floor( (3691.0 * c)*100 ) / 100;
 	}
 	
 	public class MapDisplay {

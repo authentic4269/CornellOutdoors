@@ -60,6 +60,7 @@ public class SuggestActivity extends ActionBarActivity {
 		cost.setTypeface(gs.getFont());
 		
 		final Button enter = (Button) findViewById(R.id.sa_enter);
+		enter.setTypeface(gs.getFont());
 		
 
 		
@@ -77,6 +78,7 @@ public class SuggestActivity extends ActionBarActivity {
 
 			@Override
 			public void onClick(View arg0) {
+				
 				CornellActivity a = new CornellActivity();
 				a.name = name.getText().toString();
 				a.hours = hours.getText().toString();
@@ -87,6 +89,8 @@ public class SuggestActivity extends ActionBarActivity {
 				a.latitude = lat;
 				SubmitActivity loader = new SubmitActivity();
 				loader.execute(a);
+				Intent listView = new Intent( SuggestActivity.this, ListViewActivity.class );
+				startActivity( listView );
 			}
 			
 		});
@@ -102,6 +106,8 @@ public class SuggestActivity extends ActionBarActivity {
 		protected Void doInBackground(CornellActivity... arg0) {
 			try {
 				System.out.println( "Attempting to run background task \n");
+				String response = "";
+				String line;
 				GlobalState gs = (GlobalState) getApplication();
 				String serverString = gs.getServer() + "addactivity?";
 				CornellActivity newActivity = arg0[0];
@@ -114,8 +120,15 @@ public class SuggestActivity extends ActionBarActivity {
 				serverString = serverString + "&type=" + newActivity.type;
 				serverString = serverString + "&latitude=" + newActivity.latitude;
 				serverString = serverString + "&longitude=" + newActivity.longitude;
+				System.out.println("Server String: " + serverString);
 				URL url = new URL(serverString);
 				URLConnection connection = url.openConnection();
+				BufferedReader input = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+				while (null != ((line = input.readLine())))
+				{
+					response = response + line; 
+				}
+				System.out.println("Server Response:" + response);
 
 			} catch (Exception e) 
 			{

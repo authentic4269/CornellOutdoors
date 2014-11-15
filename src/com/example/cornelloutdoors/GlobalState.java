@@ -22,7 +22,7 @@ public class GlobalState extends Application{
 	public Typeface font;
 	
 	
-	public String serverString = "http://sleepy-wave-3087.herokuapp.com/";
+	public String serverString = "https://sleepy-wave-3087.herokuapp.com/";
 	public String configfile = "cornelloutdoorsconfig";
 	
 	public String getServer()
@@ -82,6 +82,24 @@ public class GlobalState extends Application{
 	public Typeface getFont()
 	{
 		return font;
+	}
+
+	public void setRatings(JSONArray jsonArray) {
+		JSONObject m;
+		try {
+			synchronized (this.activities) {
+				for (int i = 0; i < jsonArray.length(); i++)
+				{
+					m = jsonArray.getJSONObject(i);
+					if (this.activities.containsKey(m.getString("activity"))) {
+						CornellActivity a = this.activities.get(m.getString("activity"));
+						a.rating = Float.parseFloat(m.getString("rating"));
+					}
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	

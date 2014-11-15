@@ -1,12 +1,23 @@
 package com.example.cornelloutdoors;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 
+import org.json.JSONArray;
+
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
+import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -31,12 +42,14 @@ public class ActivityArrayAdapter extends ArrayAdapter<CornellActivity> {
 	  private final MapDisplay map;
 	  protected LocationManager locationManager;
 	  private GlobalState gs;
+	  private String uid;
 	  
 	   public ActivityArrayAdapter(Activity context, ArrayList<CornellActivity> values,
-			   CornellActivityCompare comparator, LocationManager locationManager, MapDisplay mapDisplay)
+			   CornellActivityCompare comparator, LocationManager locationManager, MapDisplay mapDisplay, String uid)
 	   {
 		   super(context, R.layout.cornellactivity_row, values);
 		   this.context = context;
+		   this.uid = uid;
 		   this.map = mapDisplay;
 		   this.locationManager = locationManager;
 		   this.displayList = values;
@@ -79,8 +92,22 @@ public class ActivityArrayAdapter extends ArrayAdapter<CornellActivity> {
 		      viewHolder.hours.setText(thisactivity.hours);
 		      viewHolder.name.setText(thisactivity.name);
 		      viewHolder.cost.setText(thisactivity.cost);
+		      if (thisactivity.rating != null)
+		    	  viewHolder.rating.setRating(thisactivity.rating);
+		      else
+		    	  viewHolder.rating.setRating((float) 0.0);
 		      
-		      
+		      viewHolder.rating.setOnRatingBarChangeListener(new OnRatingBarChangeListener() {
+
+					@Override
+					public void onRatingChanged(RatingBar arg0, float arg1,
+							boolean arg2) {
+						thisactivity.rating = arg1;
+						RatingsLoader ratingUpdate = new RatingsLoader();
+						ratingUpdate.execute(new Rating(thisactivity.name, arg1));
+					}
+			    	  
+			      });
 		      viewHolder.hours.setTypeface(gs.getFont());
 		      viewHolder.name.setTypeface(gs.getFont());
 		      viewHolder.cost.setTypeface(gs.getFont());
@@ -123,13 +150,16 @@ public class ActivityArrayAdapter extends ArrayAdapter<CornellActivity> {
 			      
 			      if (thisactivity.rating != null)
 			    	  rating.setRating(thisactivity.rating);
+			      else 
+			    	  rating.setRating((float)0.0);
 			      rating.setOnRatingBarChangeListener(new OnRatingBarChangeListener() {
 
 					@Override
 					public void onRatingChanged(RatingBar arg0, float arg1,
 							boolean arg2) {
 						thisactivity.rating = arg1;
-						
+						RatingsLoader ratingUpdate = new RatingsLoader();
+						ratingUpdate.execute(new Rating(thisactivity.name, arg1));
 					}
 			    	  
 			      });
@@ -156,6 +186,47 @@ public class ActivityArrayAdapter extends ArrayAdapter<CornellActivity> {
 		    }
 		   
 	   }
+	   
+	   protected class Rating {
+		   float rating; 
+		   String activity;
+		   
+		   public Rating(String a, float r)
+		   {
+			   rating = r;
+			   activity = a;
+		   }
+	   }
+	   
+		public class RatingsLoader extends AsyncTask<Rating, String, String> {
+
+			@Override
+			protected String doInBackground(Rating... params) {
+				String response = "";
+				try {
+					System.out.println( "Attempting to run background task \n");
+
+										
+					String queryString = "user_id=" + uid + "&rating=" + params[0].rating + "&activity=" + params[0].activity;
+					String line;
+					
+					URL url = new URL(gs.getServer() + "addrating?" + queryString.replace(" ", "%20"));
+					URLConnection connection = url.openConnection();
+					BufferedReader input = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+					while (null != ((line = input.readLine())))
+					{
+						response = response + line; 
+					}
+					
+				} catch (Exception e) 
+				{
+					System.out.println( "Error with background task \n");
+					e.printStackTrace();
+				}
+				return response;
+			}
+			
+		}
 
 	public void filter(String t) {
 		if (t.length() != 0)

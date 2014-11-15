@@ -114,7 +114,7 @@ public class SuggestActivity extends ActionBarActivity {
 				serverString = serverString + "&type=" + newActivity.type;
 				serverString = serverString + "&latitude=" + newActivity.latitude;
 				serverString = serverString + "&longitude=" + newActivity.longitude;
-				URL url = new URL(serverString);
+				URL url = new URL(serverString.replace(" ", "%20"));
 				URLConnection connection = url.openConnection();
 
 			} catch (Exception e) 

@@ -49,6 +49,7 @@ public class MapViewActivity extends ActionBarActivity{
 	GlobalState gs;
 	Builder bounds;
 	String prevActivity;
+	boolean suggest = false;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +74,10 @@ public class MapViewActivity extends ActionBarActivity{
 			{
 				suggestText.setTypeface(gs.getFont());
 				suggestText.setVisibility(View.VISIBLE);
+				LocationManager lM = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+				Location loc = lM.getLastKnownLocation(lM.NETWORK_PROVIDER);
+				bounds.include(new LatLng( loc.getLatitude(), loc.getLongitude()));
+				suggest = true;
 			}
 			else
 			{
@@ -94,8 +99,10 @@ public class MapViewActivity extends ActionBarActivity{
 				Marker newmarker = mMap.addMarker(new MarkerOptions()
 						.position(loc)
 						.title(curActivity.name));
-				
-				bounds.include( new LatLng(lat, lon) );
+				if( !suggest )
+				{
+					bounds.include( new LatLng(lat, lon) );
+				}
 				
 				latLongs.add( newmarker );
 			}
@@ -104,7 +111,7 @@ public class MapViewActivity extends ActionBarActivity{
 				@Override
 				public void onCameraChange(CameraPosition arg0)
 				{
-					if( latLongs.size() != 0 )
+					if( latLongs.size() != 0 || suggest )
 					{
 						mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds.build(), 50));
 					}

@@ -25,8 +25,8 @@
         android:theme="@style/AppTheme" 
         android:name="com.example.cornelloutdoors.GlobalState">
         <activity
-            android:name="com.example.cornelloutdoors.MainActivity"
-            android:label="@string/app_name" >
+            android:name="com.example.cornelloutdoors.MainActivity">
+            android:label="@string/app_name" />
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -34,7 +34,7 @@
             </intent-filter>
         </activity>
         <activity android:name="com.example.cornelloutdoors.MarkerInformation" />
-        <activity 
+        <activity
             android:name="com.example.cornelloutdoors.ListViewActivity"
             android:windowSoftInputMode="stateHidden" />
         <activity android:name="com.example.cornelloutdoors.SuggestActivity" />

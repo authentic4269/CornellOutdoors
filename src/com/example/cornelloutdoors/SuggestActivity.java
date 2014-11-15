@@ -29,16 +29,18 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class SuggestActivity extends ActionBarActivity {
 	LatLng location;
 	ArrayList<String> activities;
+	GlobalState gs;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.suggest_activity);
-        GlobalState gs = (GlobalState) getApplication();
+        gs = (GlobalState) getApplication();
         ArrayList<String> activities = (ArrayList<String>) getIntent().getSerializableExtra("activities");
         final Double lat = (Double) getIntent().getDoubleExtra("lat", 0.0);
         final Double lon = (Double) getIntent().getDoubleExtra("lon", 0.0);
@@ -85,12 +87,46 @@ public class SuggestActivity extends ActionBarActivity {
 				a.description = description.getText().toString();
 				a.cost = cost.getText().toString();
 				a.type = spinner.getSelectedItem().toString();
-				a.longitude = lon;
-				a.latitude = lat;
-				SubmitActivity loader = new SubmitActivity();
-				loader.execute(a);
-				Intent listView = new Intent( SuggestActivity.this, ListViewActivity.class );
-				startActivity( listView );
+				Toast toast;
+				Context context = getApplicationContext();
+				int dur = Toast.LENGTH_LONG;
+				
+				//Sanitization
+				if( a.name.length() == 0 )
+				{
+					Toast.makeText(context, "Please enter a name", dur).show();
+				}
+				else if( a.hours.length() == 0 )
+				{
+					Toast.makeText(context, "Please enter the hours", dur).show();
+				}
+				else if( a.description.length() == 0 )
+				{
+					Toast.makeText(context, "Please enter a description", dur).show();
+				}
+				else if( a.cost.length() == 0 )
+				{
+					Toast.makeText(context, "Please enter the cost", dur).show();
+				}
+				else
+				{
+					a.longitude = lon;
+					a.latitude = lat;
+					synchronized( gs.activities )
+					{
+						if( gs.activities.containsKey(a.name) )
+						{
+							Toast.makeText(context, "Activity Already Listed", dur).show();
+							return;
+						}
+						gs.activities.put(a.name, a);
+					}
+					SubmitActivity loader = new SubmitActivity();
+					loader.execute(a);
+					Toast.makeText(context, "Successfully Suggested Activity", dur).show();
+					Intent listView = new Intent( SuggestActivity.this, ListViewActivity.class );
+					startActivity( listView );
+				}
 			}
 			
 		});

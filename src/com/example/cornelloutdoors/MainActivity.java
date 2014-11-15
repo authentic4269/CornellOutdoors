@@ -44,8 +44,9 @@ public class MainActivity extends ActionBarActivity {
 	public String serverString = "http://sleepy-wave-3087.herokuapp.com/";
 	private String configfile = "cornelloutdoorsconfig";
 	public String[] activityTypes = new String[] {"Rock Climbing", "Hiking", "Paddling", "Swimming", "Skiing", 
-			"Running", "Weightlifting", "Sailing", "Golfing", "Basketball", "Football", "Ping Pong", "Table Tennis"
-	};
+			"Running", "Weightlifting", "Sailing", "Golfing", "Basketball", "Football", "Bowling",
+			"Skating", "Tennis", "Frisbee"
+		};
 	
 	GlobalState gs;
 	

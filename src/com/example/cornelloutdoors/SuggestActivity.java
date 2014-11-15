@@ -156,8 +156,7 @@ public class SuggestActivity extends ActionBarActivity {
 				serverString = serverString + "&type=" + newActivity.type;
 				serverString = serverString + "&latitude=" + newActivity.latitude;
 				serverString = serverString + "&longitude=" + newActivity.longitude;
-				System.out.println("Server String: " + serverString);
-				URL url = new URL(serverString);
+				URL url = new URL(serverString.replace(" ", "%20"));
 				URLConnection connection = url.openConnection();
 				BufferedReader input = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 				while (null != ((line = input.readLine())))

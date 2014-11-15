@@ -18,6 +18,8 @@ import org.json.JSONObject;
 
 import android.support.v7.app.ActionBarActivity;
 import android.support.v4.app.Fragment;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -333,6 +335,45 @@ public class MainActivity extends ActionBarActivity {
 		
 	}
 	
+	public class RatingsLoader extends AsyncTask<String, String, String> {
+
+		@Override
+		protected String doInBackground(String... params) {
+			String response = "";
+			try {
+				System.out.println( "Attempting to run background task \n");
+
+				gs = (GlobalState) getApplication();
+				
+				WifiManager manager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+				WifiInfo info = manager.getConnectionInfo();
+				String address = info.getMacAddress();
+				
+				String serverString = gs.getServer() + "getratings"; 
+				
+				String queryString = serverString + "?user_id=" + address;
+				String line;
+				
+				URL url = new URL(serverString);
+				System.out.println( "URL: " + queryString);
+				URLConnection connection = url.openConnection();
+				BufferedReader input = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+				while (null != ((line = input.readLine())))
+				{
+					response = response + line; 
+				}
+				gs.setRatings(new JSONArray(response));
+				
+			} catch (Exception e) 
+			{
+				System.out.println( "Error with background task \n");
+				e.printStackTrace();
+			}
+			return response;
+		}
+		
+	}
+	
 	public class ActivityLoader extends AsyncTask<String, String, String> {
 
 		GlobalState gs; 
@@ -342,6 +383,7 @@ public class MainActivity extends ActionBarActivity {
 			String response = "";
 			try {
 				System.out.println( "Attempting to run background task \n");
+
 				gs = (GlobalState) getApplication();
 				String serverString = gs.getServer() + "getactivities"; 
 				String queryString = serverString + '?';

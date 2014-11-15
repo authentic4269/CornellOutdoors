@@ -13,6 +13,8 @@ import android.content.Intent;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -106,6 +108,9 @@ public class ListViewActivity extends Activity {
 		final ListView activitiesListView = (ListView) findViewById(R.id.list);
 		ArrayList<CornellActivity> activities = new ArrayList<CornellActivity>();
 		final GlobalState gs = (GlobalState) getApplication();
+		WifiManager manager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+		WifiInfo info = manager.getConnectionInfo();
+		String address = info.getMacAddress();
 		synchronized (gs.activities) {
 			Iterator<CornellActivity> iter = gs.activities.values().iterator();
 			locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
@@ -115,7 +120,7 @@ public class ListViewActivity extends Activity {
 				activities.add(iter.next());
 			Collections.sort(activities, comparator);
 			adapter = new ActivityArrayAdapter(this, 
-					activities, comparator, locationManager, new MapDisplay(this, locationManager));
+					activities, comparator, locationManager, new MapDisplay(this, locationManager), address);
 			activitiesListView.setAdapter(adapter);
 		}
 		

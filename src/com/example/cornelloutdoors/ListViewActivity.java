@@ -136,6 +136,7 @@ public class ListViewActivity extends Activity {
 		});
 		
 		final EditText search = (EditText) findViewById(R.id.search);
+		search.setTypeface( gs.getFont() );
 		search.addTextChangedListener(new TextWatcher() {
 
 			@Override

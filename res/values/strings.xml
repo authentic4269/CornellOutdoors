@@ -14,5 +14,6 @@
     <string name="hours">When is this activity open?</string>
     <string name="name">Name of Activity</string>
     <string name="choosemore">Choose more than one!</string>
+    <string name="takeme">Take Me There!</string>
 
 </resources>

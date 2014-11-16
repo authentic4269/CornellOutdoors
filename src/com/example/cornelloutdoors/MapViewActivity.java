@@ -50,6 +50,7 @@ public class MapViewActivity extends ActionBarActivity{
 	Builder bounds;
 	String prevActivity;
 	boolean suggest = false;
+	boolean firstView = false;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -111,9 +112,10 @@ public class MapViewActivity extends ActionBarActivity{
 				@Override
 				public void onCameraChange(CameraPosition arg0)
 				{
-					if( latLongs.size() != 0 || suggest )
+					if( ( latLongs.size() != 0 || suggest ) && !firstView )
 					{
 						mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds.build(), 50));
+						firstView = true;
 					}
 					mMap.setOnCameraChangeListener( null );
 				}

@@ -63,14 +63,6 @@ public class MainActivity extends ActionBarActivity {
 		Typeface font = Typeface.createFromAsset(getAssets(), "ClementePDae-Light.ttf");
 		gs.setFont( font );
 		
-
-		boolean deleted = false;
-		deleteFile( configfile );
-		if( deleted )
-		{
-			System.out.println( "deleted \n");
-		}
-		
 		try {
 			BufferedReader settingsInput = new BufferedReader(new InputStreamReader(openFileInput(configfile), "UTF-8"));
 			String line;
@@ -159,7 +151,7 @@ public class MainActivity extends ActionBarActivity {
 	}
 	
 	protected void setupMainButtons() {
-		final Button historyButton = (Button) findViewById(R.id.historybutton);
+		/*final Button historyButton = (Button) findViewById(R.id.historybutton);
 		final Intent historyIntent = new Intent(this, HistoryActivity.class);
 		historyButton.setOnClickListener(new OnClickListener() {
 
@@ -183,7 +175,7 @@ public class MainActivity extends ActionBarActivity {
 				}
 				return false;
 			}
-		});
+		});*/
 		
 		final Button listButton = (Button) findViewById(R.id.listbutton);
 		final Intent listIntent = new Intent(this, ListViewActivity.class);

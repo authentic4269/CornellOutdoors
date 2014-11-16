@@ -68,13 +68,31 @@ public class ListViewActivity extends Activity {
 	 * @param lat2
 	 * @return
 	 */
+	
+	static private double deg2rad(double deg)
+	{
+		return (deg * Math.PI / 180.0);
+	}
+	
+	static private double rad2deg(double rad)
+	{
+		return (rad * 180 / Math.PI);
+	}
+	
 	public static double distance(double long1, double lat1, double long2, double lat2)
 	{
-		double dlon = long2 - long1;
+		/*double dlon = long2 - long1;
 		double dlat = lat2 - lat1;
 		double a = (Math.pow(Math.sin(dlat/2), 2) + Math.cos(lat1) * Math.cos(lat2)*(Math.pow(Math.sin(dlon/2),2)));
 		double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-		return Math.floor( (3691.0 * c)*100 ) / 100;
+		return Math.floor( (3691.0 * c)*100 ) / 100;*/
+		double theta = long1 - long2;
+		double dist = Math.sin(deg2rad(lat1)) * Math.sin(deg2rad(lat2)) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.cos(deg2rad(theta));
+		dist = Math.acos(dist);
+		dist = rad2deg(dist);
+		dist = dist * 60 * 1.1515;
+		return Math.floor(dist * 100) / 100;
+
 	}
 	
 	public class MapDisplay {

@@ -234,7 +234,7 @@ public class ActivityArrayAdapter extends ArrayAdapter<CornellActivity> {
 			displayList.clear();
 			for (CornellActivity a : dataList)
 			{
-				if (a.name.contains(t) || a.description.contains(t) || a.type.contains(t))
+				if (a.name.toLowerCase().contains(t) || a.description.toLowerCase().contains(t) || a.type.toLowerCase().contains(t))
 				{
 					displayList.add(a);
 				}

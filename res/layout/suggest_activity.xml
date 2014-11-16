@@ -21,6 +21,8 @@
 	    android:layout_width="300dp"
 	    android:layout_height="wrap_content"
 	    android:layout_marginBottom="15dp"
+	    android:maxLines="1"
+	    android:inputType="text"
 	    android:gravity="center"
 	    android:hint="@string/name" />
         
@@ -35,6 +37,8 @@
 	    android:layout_width="300dp"
 	    android:layout_height="wrap_content"
 	    android:layout_marginBottom="15dp"
+	    android:maxLines="1"
+	    android:inputType="text"
 	    android:gravity="center"
 	    android:hint="@string/hours" />
     
@@ -44,6 +48,7 @@
 	    android:layout_height="wrap_content"
 	    android:layout_below="@id/sa_hours"
 	    android:layout_marginBottom="15dp"
+	    android:inputType="text"
 	    android:gravity="center"
 	    android:hint="@string/description" />
     
@@ -53,6 +58,7 @@
 	    android:layout_height="wrap_content"
 	    android:layout_below="@id/sa_description"
 	    android:layout_marginBottom="15dp"
+	    android:maxLines="1"
 	    android:gravity="center"
 	    android:hint="Cost" />
     

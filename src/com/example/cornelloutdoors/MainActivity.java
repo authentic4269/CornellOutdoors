@@ -353,7 +353,7 @@ public class MainActivity extends ActionBarActivity {
 				String queryString = serverString + "?user_id=" + address;
 				String line;
 				
-				URL url = new URL(serverString);
+				URL url = new URL(queryString);
 				System.out.println( "URL: " + queryString);
 				URLConnection connection = url.openConnection();
 				BufferedReader input = new BufferedReader(new InputStreamReader(connection.getInputStream()));
@@ -404,6 +404,8 @@ public class MainActivity extends ActionBarActivity {
 						response = response + line; 
 					}
 					gs.setActivities(new JSONArray(response));
+					RatingsLoader loader = new RatingsLoader();
+					loader.execute();
 				}
 			} catch (Exception e) 
 			{

@@ -92,22 +92,25 @@ public class ActivityArrayAdapter extends ArrayAdapter<CornellActivity> {
 		      viewHolder.hours.setText(thisactivity.hours);
 		      viewHolder.name.setText(thisactivity.name);
 		      viewHolder.cost.setText(thisactivity.cost);
-		      if (thisactivity.rating != null)
-		    	  viewHolder.rating.setRating(thisactivity.rating);
-		      else
-		    	  viewHolder.rating.setRating((float) 0.0);
+
 		      
 		      viewHolder.rating.setOnRatingBarChangeListener(new OnRatingBarChangeListener() {
 
 					@Override
 					public void onRatingChanged(RatingBar arg0, float arg1,
 							boolean arg2) {
+						if (thisactivity.rating != null && thisactivity.rating == arg1)
+							return;
 						thisactivity.rating = arg1;
 						RatingsLoader ratingUpdate = new RatingsLoader();
 						ratingUpdate.execute(new Rating(thisactivity.name, arg1));
 					}
 			    	  
 			      });
+		      if (thisactivity.rating != null)
+		    	  viewHolder.rating.setRating(thisactivity.rating);
+		      else
+		    	  viewHolder.rating.setRating((float) 0.0);
 		      viewHolder.hours.setTypeface(gs.getFont());
 		      viewHolder.name.setTypeface(gs.getFont());
 		      viewHolder.cost.setTypeface(gs.getFont());
@@ -134,35 +137,31 @@ public class ActivityArrayAdapter extends ArrayAdapter<CornellActivity> {
 		      return view;
 		    } else {
 			      final CornellActivity thisactivity = displayList.get(position);
-			      final ViewHolder viewHolder = new ViewHolder();
-			      TextView name = (TextView) convertView.findViewById(R.id.name);
-			      TextView cost = (TextView) convertView.findViewById(R.id.cost);
-			      TextView type = (TextView) convertView.findViewById(R.id.type);
-			      TextView hours = (TextView) convertView.findViewById(R.id.hours);
-			      RatingBar rating = (RatingBar) convertView.findViewById(R.id.rating);
-			      Button mapbutton = (Button) convertView.findViewById(R.id.map);
-			      viewHolder.distance = (TextView) convertView.findViewById(R.id.distance);
+			      final ViewHolder viewHolder = (ViewHolder) convertView.getTag();
 			      
-			      type.setText(thisactivity.type + ",");
-			      name.setText(thisactivity.name);
-			      hours.setText(thisactivity.hours);
-			      cost.setText(thisactivity.cost);
-			      
-			      if (thisactivity.rating != null)
-			    	  rating.setRating(thisactivity.rating);
-			      else 
-			    	  rating.setRating((float)0.0);
-			      rating.setOnRatingBarChangeListener(new OnRatingBarChangeListener() {
+			      viewHolder.type.setText(thisactivity.type + ",");
+			      viewHolder.name.setText(thisactivity.name);
+			      viewHolder.hours.setText(thisactivity.hours);
+			      viewHolder.cost.setText(thisactivity.cost);
+			      viewHolder.rating.setOnRatingBarChangeListener(new OnRatingBarChangeListener() {
 
 					@Override
 					public void onRatingChanged(RatingBar arg0, float arg1,
 							boolean arg2) {
+						if (thisactivity.rating != null && thisactivity.rating == arg1)
+							return;
 						thisactivity.rating = arg1;
 						RatingsLoader ratingUpdate = new RatingsLoader();
 						ratingUpdate.execute(new Rating(thisactivity.name, arg1));
 					}
 			    	  
 			      });
+			      if (thisactivity.rating != null)
+			    	  viewHolder.rating.setRating(thisactivity.rating);
+			      else 
+			    	  viewHolder.rating.setRating((float)0.0);
+
+
 			      Location loc = locationManager.getLastKnownLocation(locationManager.NETWORK_PROVIDER);
 					if (loc != null)
 					{
@@ -170,7 +169,7 @@ public class ActivityArrayAdapter extends ArrayAdapter<CornellActivity> {
 						double mylat = loc.getLatitude();
 				        viewHolder.distance.setText(ListViewActivity.distance(thisactivity.longitude, thisactivity.latitude, mylong, mylat) + " mi");
 				        viewHolder.distance.setTypeface( gs.getFont() );
-						mapbutton.setOnClickListener(new OnClickListener() {
+				        viewHolder.mapbutton.setOnClickListener(new OnClickListener() {
 
 							@Override
 							public void onClick(View arg0) {
@@ -180,8 +179,6 @@ public class ActivityArrayAdapter extends ArrayAdapter<CornellActivity> {
 							
 						});
 					}
-					
-					convertView.setTag(viewHolder);
 					return convertView;
 		    }
 		   

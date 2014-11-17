@@ -16,6 +16,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v4.app.Fragment;
 import android.net.wifi.WifiInfo;
@@ -46,8 +47,9 @@ public class MainActivity extends ActionBarActivity {
 	public String serverString = "http://sleepy-wave-3087.herokuapp.com/";
 	private String configfile = "cornelloutdoorsconfig";
 	public String[] activityTypes = new String[] {"Rock Climbing", "Hiking", "Paddling", "Swimming", "Skiing", 
-			"Running", "Weightlifting", "Sailing", "Golfing", "Basketball", "Football", "Ping Pong", "Table Tennis"
-	};
+			"Running", "Weightlifting", "Sailing", "Golfing", "Basketball", "Football", "Bowling",
+			"Skating", "Tennis", "Frisbee"
+		};
 	
 	GlobalState gs;
 	
@@ -59,16 +61,8 @@ public class MainActivity extends ActionBarActivity {
 		gs.setActivityTypes(activityTypes);
 		gs.activities = new HashMap<String, CornellActivity>();
 		userActivities = new LinkedList<String>();
-		Typeface font = Typeface.createFromAsset(getAssets(), "ClementePDae-Light.ttf");
+		Typeface font = Typeface.createFromAsset(getAssets(), "fonts/ClementePDae-Light.otf");
 		gs.setFont( font );
-		
-
-		boolean deleted = false;
-		deleteFile( configfile );
-		if( deleted )
-		{
-			System.out.println( "deleted \n");
-		}
 		
 		try {
 			BufferedReader settingsInput = new BufferedReader(new InputStreamReader(openFileInput(configfile), "UTF-8"));
@@ -152,13 +146,12 @@ public class MainActivity extends ActionBarActivity {
 			e.printStackTrace();
 		}
 
-
 		//Intent intent = new Intent(this, TrackingService.class);
 		//startService(intent);
 	}
 	
 	protected void setupMainButtons() {
-		final Button historyButton = (Button) findViewById(R.id.historybutton);
+		/*final Button historyButton = (Button) findViewById(R.id.historybutton);
 		final Intent historyIntent = new Intent(this, HistoryActivity.class);
 		historyButton.setOnClickListener(new OnClickListener() {
 
@@ -182,7 +175,7 @@ public class MainActivity extends ActionBarActivity {
 				}
 				return false;
 			}
-		});
+		});*/
 		
 		final Button listButton = (Button) findViewById(R.id.listbutton);
 		final Intent listIntent = new Intent(this, ListViewActivity.class);
@@ -282,9 +275,7 @@ public class MainActivity extends ActionBarActivity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
-		menu.add("Settings");
-		menu.add("History");
+		//getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
 

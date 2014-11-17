@@ -16,6 +16,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v4.app.Fragment;
 import android.net.wifi.WifiInfo;
@@ -144,7 +145,6 @@ public class MainActivity extends ActionBarActivity {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
 
 		//Intent intent = new Intent(this, TrackingService.class);
 		//startService(intent);
@@ -275,9 +275,7 @@ public class MainActivity extends ActionBarActivity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
-		menu.add("Settings");
-		menu.add("History");
+		//getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
 

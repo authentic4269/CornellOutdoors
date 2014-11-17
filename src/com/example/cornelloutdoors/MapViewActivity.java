@@ -49,8 +49,9 @@ public class MapViewActivity extends ActionBarActivity{
 	GlobalState gs;
 	Builder bounds;
 	String prevActivity;
-	boolean suggest = false;
+	Intent intent;
 	boolean firstView = false;
+	boolean moveCamera = false;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +59,7 @@ public class MapViewActivity extends ActionBarActivity{
         setContentView(R.layout.map_view);
         gs = (GlobalState) getApplication();
         bounds = new LatLngBounds.Builder();
-        Intent intent = getIntent();
+        intent = getIntent();
         prevActivity = intent.getStringExtra("Activity");
         
         setTitle( "Map View" );
@@ -77,8 +78,17 @@ public class MapViewActivity extends ActionBarActivity{
 				suggestText.setVisibility(View.VISIBLE);
 				LocationManager lM = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 				Location loc = lM.getLastKnownLocation(lM.NETWORK_PROVIDER);
-				bounds.include(new LatLng( loc.getLatitude(), loc.getLongitude()));
-				suggest = true;
+				bounds.include(new LatLng(loc.getLatitude(), loc.getLongitude()));
+				moveCamera = true;
+			}
+			else if(prevActivity.equals("ZoomView"))
+			{
+				Double lat = intent.getDoubleExtra("lat", 0.0);
+				Double lon = intent.getDoubleExtra("lon", 0.0);
+				
+				bounds.include(new LatLng( lat, lon));
+				suggestText.setVisibility(View.GONE);
+				moveCamera = true;
 			}
 			else
 			{
@@ -100,26 +110,27 @@ public class MapViewActivity extends ActionBarActivity{
 				Marker newmarker = mMap.addMarker(new MarkerOptions()
 						.position(loc)
 						.title(curActivity.name));
-				if( !suggest )
+				if( !moveCamera )
 				{
 					bounds.include( new LatLng(lat, lon) );
 				}
 				
 				latLongs.add( newmarker );
-			}
-			mMap.setOnCameraChangeListener( new OnCameraChangeListener()
+			}	
+			
+			if(latLongs.size() != 0 && !firstView)
 			{
-				@Override
-				public void onCameraChange(CameraPosition arg0)
+				mMap.setOnCameraChangeListener( new OnCameraChangeListener()
 				{
-					if( ( latLongs.size() != 0 || suggest ) && !firstView )
+					@Override
+					public void onCameraChange(CameraPosition arg0)
 					{
-						mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds.build(), 50));
+						mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds.build(), 200));
 						firstView = true;
+						mMap.setOnCameraChangeListener( null );
 					}
-					mMap.setOnCameraChangeListener( null );
-				}
-			});
+				});
+			}
 			
 			mMap.setOnInfoWindowClickListener(new OnInfoWindowClickListener() {
 
@@ -189,6 +200,7 @@ public class MapViewActivity extends ActionBarActivity{
 	{
 	        LatLng lowerBound = new LatLng(curr.latitude-offset, curr.longitude-offset);
 	        LatLng upperBound = new LatLng(curr.latitude+offset, curr.longitude+offset);
+	        
 	        LatLngBounds currBounds = new LatLngBounds(lowerBound, upperBound);
 	        mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(currBounds, 0));
 	}

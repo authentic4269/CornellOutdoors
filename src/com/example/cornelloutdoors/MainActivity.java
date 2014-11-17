@@ -61,7 +61,7 @@ public class MainActivity extends ActionBarActivity {
 		gs.setActivityTypes(activityTypes);
 		gs.activities = new HashMap<String, CornellActivity>();
 		userActivities = new LinkedList<String>();
-		Typeface font = Typeface.createFromAsset(getAssets(), "fonts/ClementePDae-Light.ttf");
+		Typeface font = Typeface.createFromAsset(getAssets(), "fonts/ClementePDae-Light.otf");
 		gs.setFont( font );
 		
 		try {

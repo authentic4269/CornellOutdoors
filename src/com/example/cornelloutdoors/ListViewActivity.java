@@ -105,6 +105,15 @@ public class ListViewActivity extends Activity {
 			context = a;
 		}
 		
+		public void zoomMap(CornellActivity dst)
+		{
+			final Intent mapView = new Intent(getApplicationContext(), MapViewActivity.class);
+			mapView.putExtra("Activity", "ZoomView");
+			mapView.putExtra("lat", dst.latitude);
+			mapView.putExtra("lon", dst.longitude);
+			startActivity(mapView);
+		}
+		
 		public void showMap(CornellActivity dst)
 		{
 			Location loc = locman.getLastKnownLocation(locationManager.NETWORK_PROVIDER);

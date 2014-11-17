@@ -114,22 +114,21 @@ public class ActivityArrayAdapter extends ArrayAdapter<CornellActivity> {
 		      viewHolder.type.setTypeface(gs.getFont());
 		      
 		      Location loc = locationManager.getLastKnownLocation(locationManager.NETWORK_PROVIDER);
-				if (loc != null)
-				{
-					double mylong = loc.getLongitude();
-					double mylat = loc.getLatitude();
-			        viewHolder.distance.setText(ListViewActivity.distance(thisactivity.longitude, thisactivity.latitude, mylong, mylat) + " mi");
-			        viewHolder.distance.setTypeface(gs.getFont());
-					viewHolder.mapbutton.setOnClickListener(new OnClickListener() {
+			  if (loc != null)
+			  {
+		        double mylong = loc.getLongitude();
+				double mylat = loc.getLatitude();
+			    viewHolder.distance.setText(ListViewActivity.distance(thisactivity.longitude, thisactivity.latitude, mylong, mylat) + " mi");
+			    viewHolder.distance.setTypeface(gs.getFont());
+				viewHolder.mapbutton.setOnClickListener(new OnClickListener() {
 
-						@Override
-						public void onClick(View arg0) {
-							map.showMap(thisactivity);
-							
-						}
-						
-					});
-				}
+					@Override
+					public void onClick(View arg0) {
+						map.zoomMap(thisactivity);
+					}
+					
+				});
+			  }
 		      view.setTag(viewHolder);
 		      return view;
 		    } else {
@@ -174,7 +173,7 @@ public class ActivityArrayAdapter extends ArrayAdapter<CornellActivity> {
 
 							@Override
 							public void onClick(View arg0) {
-								map.showMap(thisactivity);
+								map.zoomMap(thisactivity);
 								
 							}
 							
